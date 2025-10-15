@@ -1,0 +1,30 @@
+{
+  "name": "servicio-usuarios",
+  "version": "1.0.0",
+  "description": "Microservicio de Usuarios para Sistema de Venta de Entradas",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "3.0.2",
+    "body-parser": "2.2.0",
+    "cors": "^2.8.5",
+    "dotenv": "17.2.3",
+    "express": "5.1.0",
+    "express-validator": "^7.2.1",
+    "helmet": "8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.19.1",
+    "morgan": "^1.10.1",
+    "winston": "^3.18.3",
+    "winston-daily-rotate-file": "^5.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

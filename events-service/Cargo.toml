@@ -1,0 +1,25 @@
+[package]
+name = "events-service"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+actix-web = "4"
+actix-web-httpauth = "0.8"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+sqlx = { version = "0.8.6", features = ["mysql", "runtime-tokio-rustls", "chrono", "uuid", "bigdecimal"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+jsonwebtoken = { version = "9.3", default-features = false, features = ["use_pem"] }
+dotenvy = "0.15"
+
+# Logging mejorado
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json", "time", "local-time"] }
+tracing-actix-web = "0.7"
+tracing-appender = "0.2"  
+
+validator = { version = "0.18", features = ["derive"] }
+bigdecimal = { version = "0.4", features = ["serde"] }
