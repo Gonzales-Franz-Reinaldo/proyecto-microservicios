@@ -1,0 +1,66 @@
+<div class="list-container">
+    <div class="list-header">
+        <button class="btn-back" (click)="goBack()">
+            ← Volver al Dashboard
+        </button>
+        <h1>📋 Gestión de Usuarios</h1>
+    </div>
+
+    <div class="list-content">
+        @if (loading()) {
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Cargando usuarios...</p>
+        </div>
+        } @else if (error()) {
+        <div class="error-state">
+            <p>⚠️ {{ error() }}</p>
+            <button class="btn-primary" (click)="loadUsers()">Reintentar</button>
+        </div>
+        } @else {
+        <!-- Filters -->
+        <div class="filters-bar">
+            <input type="text" [(ngModel)]="searchTerm" placeholder="🔍 Buscar por nombre o email..."
+                class="search-input" />
+            <select [(ngModel)]="selectedRole" class="filter-select" title="Lista de los roles">
+                <option value="all">Todos</option>
+                <option value="admin">Admins</option>
+                <option value="user">Usuarios</option>
+            </select>
+        </div>
+
+        <!-- Users Grid -->
+        <div class="users-grid">
+            @for (user of filteredUsers; track user._id) {
+            <div class="user-card">
+                <div class="card-header">
+                    <div class="user-avatar">{{ user.name.charAt(0) }}</div>
+                    @if (user.role === 'admin') {
+                    <span class="badge badge-admin">Admin</span>
+                    } @else {
+                    <span class="badge badge-user">Usuario</span>
+                    }
+                </div>
+                <div class="card-body">
+                    <h3>{{ user.name }}</h3>
+                    <p>{{ user.email }}</p>
+                    <small>Registrado: {{ user.createdAt | date: 'dd/MM/yyyy' }}</small>
+                </div>
+                <div class="card-actions">
+                    <button class="btn-view" (click)="viewDetail(user._id)">
+                        Ver Detalle
+                    </button>
+                    <button class="btn-delete" (click)="deleteUser(user)">
+                        Eliminar
+                    </button>
+                </div>
+            </div>
+            } @empty {
+            <div class="empty-state">
+                <p>🔍 No se encontraron usuarios</p>
+            </div>
+            }
+        </div>
+        }
+    </div>
+</div>

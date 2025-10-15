@@ -1,0 +1,143 @@
+<div class="register-container">
+    <div class="register-card">
+        <!-- Logo y título -->
+        <div class="register-header">
+            <div class="logo">🎫</div>
+            <h1>Crear Cuenta</h1>
+            <p>Completa el formulario para registrarte</p>
+        </div>
+
+        <!-- Formulario de registro -->
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+
+            <!-- Nombre -->
+            <div class="form-group">
+                <label for="name">Nombre Completo</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">👤</span>
+                    <input type="text" id="name" formControlName="name" placeholder="Juan Pérez"
+                        [class.invalid]="name?.invalid && name?.touched" />
+                </div>
+                @if (name?.invalid && name?.touched) {
+                <small class="error-message">
+                    @if (name?.errors?.['required']) {
+                    El nombre es requerido
+                    }
+                    @if (name?.errors?.['minlength']) {
+                    Mínimo 3 caracteres
+                    }
+                </small>
+                }
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email">Correo Electrónico</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">📧</span>
+                    <input type="email" id="email" formControlName="email" placeholder="tu@email.com"
+                        [class.invalid]="email?.invalid && email?.touched" />
+                </div>
+                @if (email?.invalid && email?.touched) {
+                <small class="error-message">
+                    @if (email?.errors?.['required']) {
+                    El correo es requerido
+                    }
+                    @if (email?.errors?.['email']) {
+                    Ingresa un correo válido
+                    }
+                </small>
+                }
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">🔒</span>
+                    <input [type]="showPassword() ? 'text' : 'password'" id="password" formControlName="password"
+                        placeholder="••••••••" [class.invalid]="password?.invalid && password?.touched" />
+                    <button type="button" class="toggle-password" (click)="togglePassword()">
+                        {{ showPassword() ? '👁️' : '👁️‍🗨️' }}
+                    </button>
+                </div>
+                @if (password?.invalid && password?.touched) {
+                <small class="error-message">
+                    @if (password?.errors?.['required']) {
+                    La contraseña es requerida
+                    }
+                    @if (password?.errors?.['minlength']) {
+                    Mínimo 6 caracteres
+                    }
+                </small>
+                }
+            </div>
+
+            <!-- Confirmar Password -->
+            <div class="form-group">
+                <label for="confirmPassword">Confirmar Contraseña</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">🔐</span>
+                    <input [type]="showConfirmPassword() ? 'text' : 'password'" id="confirmPassword"
+                        formControlName="confirmPassword" placeholder="••••••••"
+                        [class.invalid]="(confirmPassword?.invalid && confirmPassword?.touched) || (registerForm.errors?.['passwordMismatch'] && confirmPassword?.touched)" />
+                    <button type="button" class="toggle-password" (click)="toggleConfirmPassword()">
+                        {{ showConfirmPassword() ? '👁️' : '👁️‍🗨️' }}
+                    </button>
+                </div>
+                @if (confirmPassword?.invalid && confirmPassword?.touched) {
+                <small class="error-message">
+                    @if (confirmPassword?.errors?.['required']) {
+                    Confirma tu contraseña
+                    }
+                </small>
+                }
+                @if (registerForm.errors?.['passwordMismatch'] && confirmPassword?.touched) {
+                <small class="error-message">
+                    Las contraseñas no coinciden
+                </small>
+                }
+            </div>
+
+            <!-- Rol -->
+            <div class="form-group">
+                <label for="role">Tipo de Usuario</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">⚙️</span>
+                    <select id="role" formControlName="role" class="select-input">
+                        <option value="user">Usuario Normal</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+                <small class="info-message">
+                    ℹ️ Los administradores pueden gestionar eventos y usuarios
+                </small>
+            </div>
+
+            <!-- Error general -->
+            @if (error()) {
+            <div class="alert alert-error">
+                ⚠️ {{ error() }}
+            </div>
+            }
+
+            <!-- Botón de submit -->
+            <button type="submit" class="btn-primary" [disabled]="loading() || registerForm.invalid">
+                @if (loading()) {
+                <span class="spinner"></span>
+                Registrando...
+                } @else {
+                Crear Cuenta
+                }
+            </button>
+
+            <!-- Link a login -->
+            <div class="form-footer">
+                <p>
+                    ¿Ya tienes cuenta?
+                    <a routerLink="/auth/login" class="link">Inicia sesión aquí</a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
