@@ -1,0 +1,124 @@
+<div class="dashboard-container">
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <span class="logo">🎫</span>
+                <h1>Sistema de Venta de Entradas</h1>
+            </div>
+            <button class="btn-logout" (click)="logout()">
+                🚪 Cerrar Sesión
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        @if (loading()) {
+        <div class="loading-state">
+            <div class="spinner-large"></div>
+            <p>Cargando perfil...</p>
+        </div>
+        } @else if (error()) {
+        <div class="error-state">
+            <span class="error-icon">⚠️</span>
+            <h2>Error al cargar el perfil</h2>
+            <p>{{ error() }}</p>
+            <button class="btn-primary" (click)="loadUserProfile()">
+                Reintentar
+            </button>
+        </div>
+        } @else if (currentUser()) {
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <div class="welcome-card">
+                <div class="user-avatar">👤</div>
+                <div class="user-info">
+                    <h2>¡Bienvenido, {{ currentUser()?.name }}!</h2>
+                    <p class="user-email">{{ currentUser()?.email }}</p>
+                    <span class="user-badge">Usuario</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="actions-section">
+            <h3>Acciones Rápidas</h3>
+            <div class="actions-grid">
+                <div class="action-card" (click)="navigateToEvents()">
+                    <div class="action-icon">🎭</div>
+                    <h4>Ver Eventos</h4>
+                    <p>Explora todos los eventos disponibles</p>
+                </div>
+
+                <div class="action-card" (click)="navigateToMyPurchases()">
+                    <div class="action-icon">🛒</div>
+                    <h4>Mis Compras</h4>
+                    <p>Revisa tus entradas compradas</p>
+                </div>
+
+                <div class="action-card disabled">
+                    <div class="action-icon">👤</div>
+                    <h4>Mi Perfil</h4>
+                    <p>Gestiona tu información personal</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- User Stats -->
+        <section class="stats-section">
+            <h3>Estadísticas</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🎟️</div>
+                    <div class="stat-info">
+                        <p class="stat-value">0</p>
+                        <p class="stat-label">Entradas Compradas</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-info">
+                        <p class="stat-value">0</p>
+                        <p class="stat-label">Eventos Asistidos</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-info">
+                        <p class="stat-value">$0.00</p>
+                        <p class="stat-label">Total Gastado</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- User Info Card -->
+        <section class="info-section">
+            <h3>Información de la Cuenta</h3>
+            <div class="info-card">
+                <div class="info-row">
+                    <span class="info-label">Nombre:</span>
+                    <span class="info-value">{{ currentUser()?.name }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">{{ currentUser()?.email }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Rol:</span>
+                    <span class="info-value">
+                        <span class="badge badge-user">Usuario</span>
+                    </span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Miembro desde:</span>
+                    <span class="info-value">{{ currentUser()?.createdAt | date: 'dd/MM/yyyy' }}</span>
+                </div>
+            </div>
+        </section>
+        }
+    </main>
+</div>

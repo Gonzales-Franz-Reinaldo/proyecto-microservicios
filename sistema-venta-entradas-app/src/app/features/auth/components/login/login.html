@@ -1,0 +1,99 @@
+<div class="login-container">
+    <div class="login-card">
+        <!-- Logo y título -->
+        <div class="login-header">
+            <div class="logo">🎫</div>
+            <h1>Sistema de Venta de Entradas</h1>
+            <p>Inicia sesión para continuar</p>
+        </div>
+
+        <!-- Formulario de login -->
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email">Correo Electrónico</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">📧</span>
+                    <input type="email" id="email" formControlName="email" placeholder="tu@email.com"
+                        [class.invalid]="email?.invalid && email?.touched" />
+                </div>
+                @if (email?.invalid && email?.touched) {
+                <small class="error-message">
+                    @if (email?.errors?.['required']) {
+                    El correo es requerido
+                    }
+                    @if (email?.errors?.['email']) {
+                    Ingresa un correo válido
+                    }
+                </small>
+                }
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">🔒</span>
+                    <input [type]="showPassword() ? 'text' : 'password'" id="password" formControlName="password"
+                        placeholder="••••••••" [class.invalid]="password?.invalid && password?.touched" />
+                    <button type="button" class="toggle-password" (click)="togglePassword()">
+                        {{ showPassword() ? '👁️' : '👁️‍🗨️' }}
+                    </button>
+                </div>
+                @if (password?.invalid && password?.touched) {
+                <small class="error-message">
+                    @if (password?.errors?.['required']) {
+                    La contraseña es requerida
+                    }
+                    @if (password?.errors?.['minlength']) {
+                    Mínimo 6 caracteres
+                    }
+                </small>
+                }
+            </div>
+
+            <!-- Error general -->
+            @if (error()) {
+            <div class="alert alert-error">
+                ⚠️ {{ error() }}
+            </div>
+            }
+
+            <!-- Botón de submit -->
+            <button type="submit" class="btn-primary" [disabled]="loading() || loginForm.invalid">
+                @if (loading()) {
+                <span class="spinner"></span>
+                Iniciando sesión...
+                } @else {
+                Iniciar Sesión
+                }
+            </button>
+
+            <!-- Link a registro -->
+            <div class="form-footer">
+                <p>
+                    ¿No tienes cuenta?
+                    <a routerLink="/auth/register" class="link">Regístrate aquí</a>
+                </p>
+            </div>
+        </form>
+
+        <!-- Credenciales de prueba -->
+        <div class="test-credentials">
+            <p class="test-title">🧪 Credenciales de prueba:</p>
+            <div class="credentials-grid">
+                <div class="credential-item">
+                    <strong>Admin:</strong>
+                    <code>admin@example.com</code>
+                    <code>admin123</code>
+                </div>
+                <div class="credential-item">
+                    <strong>Usuario:</strong>
+                    <code>user@example.com</code>
+                    <code>user123</code>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
