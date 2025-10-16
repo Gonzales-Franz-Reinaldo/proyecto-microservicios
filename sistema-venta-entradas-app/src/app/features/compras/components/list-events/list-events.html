@@ -1,1 +1,154 @@
-<p>list-events works!</p>
+<div class="eventos-disponibles-container">
+
+    <!-- ========== HEADER ========== -->
+    <div class="list-header">
+        <div>
+            <h1>🎭 Eventos Disponibles</h1>
+            <p class="subtitle">Encuentra y compra tus entradas</p>
+        </div>
+    </div>
+
+    <!-- ========== FILTERS ========== -->
+    <div class="filters-section">
+
+        <!-- Search Bar -->
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Buscar por nombre o lugar..." [value]="searchTerm()"
+                (input)="onSearchChange($any($event.target).value)" class="search-input" />
+        </div>
+
+        <!-- Status Filter -->
+        <div class="filter-buttons">
+            <button 
+                class="filter-btn"
+                [class.active]="filterStatus() === 'proximos'"
+                (click)="onFilterChange('proximos')"
+            >
+                ⏰ Próximos ({{ getEventosProximos() }})
+            </button>
+            <button 
+                class="filter-btn"
+                [class.active]="filterStatus() === 'todos'"
+                (click)="onFilterChange('todos')"
+            >
+                📋 Todos ({{ eventos().length }})
+            </button>
+            <button 
+                class="filter-btn"
+                [class.active]="filterStatus() === 'pasados'"
+                (click)="onFilterChange('pasados')"
+            >
+                📅 Pasados ({{ getEventosPasados() }})
+            </button>
+        </div>
+
+    </div>
+
+    <!-- ========== LOADING ========== -->
+    @if (loading()) {
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Cargando eventos...</p>
+    </div>
+    }
+
+    <!-- ========== ERROR ========== -->
+    @else if (error()) {
+    <div class="error-container">
+        <div class="error-icon">⚠️</div>
+        <h3>{{ error() }}</h3>
+        <button class="btn-retry" (click)="loadEventos()">
+            🔄 Reintentar
+        </button>
+    </div>
+    }
+
+    <!-- ========== EMPTY STATE ========== -->
+    @else if (eventosFiltrados().length === 0) {
+    <div class="empty-state">
+        <div class="empty-icon">🎭</div>
+        <h3>No se encontraron eventos</h3>
+        @if (searchTerm() || filterStatus() !== 'proximos') {
+        <p>Intenta ajustar los filtros de búsqueda</p>
+        <button class="btn-clear-filters" (click)="searchTerm.set(''); filterStatus.set('proximos'); applyFilters()">
+            🔄 Limpiar Filtros
+        </button>
+        } @else {
+        <p>No hay eventos disponibles en este momento</p>
+        }
+    </div>
+    }
+
+    <!-- ========== EVENTOS GRID ========== -->
+    @else {
+    <div class="results-info">
+        <p>Mostrando <strong>{{ eventosFiltrados().length }}</strong> de <strong>{{ eventos().length }}</strong> eventos
+        </p>
+    </div>
+
+    <div class="eventos-grid">
+        @for (evento of eventosFiltrados(); track evento.id) {
+        <div class="evento-card" [class.evento-pasado]="isEventoPasado(evento.fecha)">
+
+            <!-- Card Header -->
+            <div class="card-header">
+                <div class="evento-icon">🎭</div>
+                <div class="evento-status">
+                    @if (isEventoPasado(evento.fecha)) {
+                    <span class="badge badge-pasado">Finalizado</span>
+                    } @else if (getDaysUntilEvent(evento.fecha) === 0) {
+                    <span class="badge badge-hoy">¡Hoy!</span>
+                    } @else if (getDaysUntilEvent(evento.fecha) === 1) {
+                    <span class="badge badge-proximo">Mañana</span>
+                    } @else if (getDaysUntilEvent(evento.fecha) <= 7) { <span class="badge badge-proximo">En {{
+                        getDaysUntilEvent(evento.fecha) }} días</span>
+                        } @else {
+                        <span class="badge badge-disponible">Disponible</span>
+                        }
+                </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="card-body">
+                <h3 class="evento-nombre">{{ evento.nombre }}</h3>
+
+                <div class="evento-info">
+                    <div class="info-item">
+                        <span class="info-icon">📅</span>
+                        <span class="info-text">{{ formatDate(evento.fecha) }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-icon">📍</span>
+                        <span class="info-text">{{ evento.lugar }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-icon">👥</span>
+                        <span class="info-text">{{ evento.capacidad }} personas</span>
+                    </div>
+                    <div class="info-item precio-destacado">
+                        <span class="info-icon">💰</span>
+                        <span class="info-text precio">{{ formatPrice(evento.precio) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Actions -->
+            <div class="card-actions">
+                @if (isEventoPasado(evento.fecha)) {
+                <button class="btn-disabled" disabled>
+                    ⏰ Evento Finalizado
+                </button>
+                } @else {
+                <button class="btn-comprar" (click)="comprarEvento(evento.id)">
+                    🎟️ Comprar Entradas
+                </button>
+                }
+            </div>
+
+        </div>
+        }
+    </div>
+    }
+
+</div>

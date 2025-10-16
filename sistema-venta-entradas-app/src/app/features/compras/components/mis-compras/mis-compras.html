@@ -1,1 +1,234 @@
-<p>mis-compras works!</p>
+<div class="mis-compras-container">
+
+    <!-- ========== HEADER ========== -->
+    <div class="compras-header">
+        <div>
+            <h1>🎟️ Mis Compras</h1>
+            <p class="subtitle">Historial de todas tus compras de entradas</p>
+        </div>
+        <button class="btn-refresh" (click)="loadCompras()" [disabled]="loading()">
+            🔄 Actualizar
+        </button>
+    </div>
+
+    <!-- ========== STATS ========== -->
+    @if (!loading() && compras().length > 0) {
+    <div class="stats-grid">
+        <div class="stat-card stat-total">
+            <div class="stat-icon">🎫</div>
+            <div class="stat-content">
+                <h3>{{ compras().length }}</h3>
+                <p>Total Compras</p>
+            </div>
+        </div>
+
+        <div class="stat-card stat-pagado">
+            <div class="stat-icon">✅</div>
+            <div class="stat-content">
+                <h3>{{ getComprasPagadas() }}</h3>
+                <p>Pagadas</p>
+                <small>{{ formatPrice(getTotalPagado()) }}</small>
+            </div>
+        </div>
+
+        <div class="stat-card stat-pendiente">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-content">
+                <h3>{{ getComprasPendientes() }}</h3>
+                <p>Pendientes</p>
+                <small>{{ formatPrice(getTotalPendiente()) }}</small>
+            </div>
+        </div>
+
+        <div class="stat-card stat-cancelado">
+            <div class="stat-icon">❌</div>
+            <div class="stat-content">
+                <h3>{{ getComprasCanceladas() }}</h3>
+                <p>Canceladas</p>
+            </div>
+        </div>
+    </div>
+    }
+
+    <!-- ========== FILTERS ========== -->
+    <div class="filters-section">
+        <div class="filter-buttons">
+            <button class="filter-btn" [class.active]="filterStatus() === 'todas'" (click)="onFilterChange('todas')">
+                📋 Todas ({{ compras().length }})
+            </button>
+            <button class="filter-btn" [class.active]="filterStatus() === 'pendiente'"
+                (click)="onFilterChange('pendiente')">
+                ⏳ Pendientes ({{ getComprasPendientes() }})
+            </button>
+            <button class="filter-btn" [class.active]="filterStatus() === 'pagado'" (click)="onFilterChange('pagado')">
+                ✅ Pagadas ({{ getComprasPagadas() }})
+            </button>
+            <button class="filter-btn" [class.active]="filterStatus() === 'cancelado'"
+                (click)="onFilterChange('cancelado')">
+                ❌ Canceladas ({{ getComprasCanceladas() }})
+            </button>
+        </div>
+    </div>
+
+    <!-- ========== LOADING ========== -->
+    @if (loading()) {
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Cargando tus compras...</p>
+    </div>
+    }
+
+    <!-- ========== ERROR ========== -->
+    @else if (error()) {
+    <div class="error-container">
+        <div class="error-icon">⚠️</div>
+        <h3>{{ error() }}</h3>
+        <button class="btn-retry" (click)="loadCompras()">
+            🔄 Reintentar
+        </button>
+    </div>
+    }
+
+    <!-- ========== EMPTY STATE ========== -->
+    @else if (comprasFiltradas().length === 0) {
+    <div class="empty-state">
+        <div class="empty-icon">🎟️</div>
+        @if (compras().length === 0) {
+        <h3>No tienes compras registradas</h3>
+        <p>Comienza explorando los eventos disponibles</p>
+        <button class="btn-primary" (click)="router.navigate(['/dashboard/user/eventos'])">
+            🎭 Ver Eventos
+        </button>
+        } @else {
+        <h3>No hay compras {{ filterStatus() === 'todas' ? '' : 'en estado ' + filterStatus() }}</h3>
+        <p>Intenta ajustar los filtros</p>
+        <button class="btn-clear-filters" (click)="filterStatus.set('todas'); applyFilter()">
+            🔄 Ver Todas
+        </button>
+        }
+    </div>
+    }
+
+    <!-- ========== COMPRAS LIST ========== -->
+    @else {
+    <div class="results-info">
+        <p>Mostrando <strong>{{ comprasFiltradas().length }}</strong> de <strong>{{ compras().length }}</strong> compras
+        </p>
+    </div>
+
+    <div class="compras-list">
+        @for (compra of comprasFiltradas(); track compra.id) {
+        <div class="compra-card" [class.processing]="processingId() === compra.id">
+
+            <!-- Card Header -->
+            <div class="card-header">
+                <div class="compra-id">
+                    <span class="id-label">Compra #{{ compra.id }}</span>
+                    <span class="fecha-compra">{{ formatDate(compra.fecha_compra) }}</span>
+                </div>
+                <span class="badge" [ngClass]="getEstadoBadgeClass(compra.estado)">
+                    {{ getEstadoIcon(compra.estado) }} {{ compra.estado | uppercase }}
+                </span>
+            </div>
+
+            <!-- Card Body -->
+            <div class="card-body">
+
+                <!-- Evento Info -->
+                <div class="evento-info">
+                    <div class="evento-icon">🎭</div>
+                    <div class="evento-details">
+                        <h3>{{ compra.evento?.nombre || 'Evento no disponible' }}</h3>
+                        @if (compra.evento) {
+                        <div class="evento-meta">
+                            <span class="meta-item">
+                                <span class="meta-icon">📅</span>
+                                {{ formatEventDate(compra.evento.fecha) }}
+                            </span>
+                            <span class="meta-item">
+                                <span class="meta-icon">📍</span>
+                                {{ compra.evento.lugar }}
+                            </span>
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Compra Details -->
+                <div class="compra-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Cantidad:</span>
+                        <span class="detail-value">{{ compra.cantidad }} entrada(s)</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Precio unitario:</span>
+                        <span class="detail-value">{{ formatPrice(compra.precio_unitario) }}</span>
+                    </div>
+                    <div class="detail-row detail-total">
+                        <span class="detail-label">TOTAL:</span>
+                        <span class="detail-value total">{{ formatPrice(compra.total) }}</span>
+                    </div>
+                    @if (compra.metodo_pago) {
+                    <div class="detail-row">
+                        <span class="detail-label">Método de pago:</span>
+                        <span class="detail-value">💳 {{ compra.metodo_pago }}</span>
+                    </div>
+                    }
+                    @if (compra.fecha_pago) {
+                    <div class="detail-row">
+                        <span class="detail-label">Fecha de pago:</span>
+                        <span class="detail-value">{{ formatDate(compra.fecha_pago) }}</span>
+                    </div>
+                    }
+                </div>
+
+            </div>
+
+            <!-- Card Actions -->
+            <div class="card-actions">
+                <button class="btn-detalle" (click)="verDetalle(compra.id)" [disabled]="processingId() === compra.id">
+                    👁️ Ver Detalle
+                </button>
+
+                @if (compra.estado === 'pendiente') {
+                <button class="btn-pagar" (click)="pagarCompra(compra)" [disabled]="processingId() === compra.id">
+                    @if (processingId() === compra.id) {
+                    <span class="spinner-small"></span>
+                    Procesando...
+                    } @else {
+                    💳 Pagar Ahora
+                    }
+                </button>
+                <button class="btn-cancelar" (click)="cancelarCompra(compra)" [disabled]="processingId() === compra.id">
+                    ❌ Cancelar
+                </button>
+                }
+
+                @if (compra.estado === 'pagado') {
+                <button class="btn-success" disabled>
+                    ✅ Pagado
+                </button>
+                }
+
+                @if (compra.estado === 'cancelado') {
+                <button class="btn-disabled" disabled>
+                    ❌ Cancelado
+                </button>
+                }
+            </div>
+
+        </div>
+        }
+    </div>
+    }
+
+</div>
+
+<!-- ========== PAYMENT MODAL ========== -->
+<app-payment-modal
+  [isOpen]="paymentModalOpen()"
+  [total]="selectedCompra()?.total || 0"
+  [compraId]="selectedCompra()?.id || 0"
+  (confirm)="onPaymentConfirm($event)"
+  (cancel)="onPaymentCancel()"
+></app-payment-modal>

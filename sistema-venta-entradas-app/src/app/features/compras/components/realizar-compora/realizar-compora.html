@@ -1,1 +1,192 @@
-<p>realizar-compora works!</p>
+<div class="realizar-compra-container">
+
+    <!-- ========== HEADER ========== -->
+    <div class="compra-header">
+        <button class="btn-back" (click)="cancel()">
+            ← Volver
+        </button>
+        <div>
+            <h1>🎟️ Realizar Compra</h1>
+            <p class="subtitle">Completa los datos de tu compra</p>
+        </div>
+    </div>
+
+    <!-- ========== LOADING ========== -->
+    @if (loading()) {
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Cargando información del evento...</p>
+    </div>
+    }
+
+    <!-- ========== ERROR LOADING ========== -->
+    @else if (error() && !evento()) {
+    <div class="error-container">
+        <div class="error-icon">⚠️</div>
+        <h3>{{ error() }}</h3>
+        <button class="btn-retry" (click)="loadEvento()">
+            🔄 Reintentar
+        </button>
+    </div>
+    }
+
+    <!-- ========== CONTENT ========== -->
+    @else if (evento()) {
+
+    <!-- Error Banner -->
+    @if (error()) {
+    <div class="error-banner">
+        <span class="error-icon">⚠️</span>
+        <p>{{ error() }}</p>
+        <button class="btn-close-error" (click)="error.set(null)">✖</button>
+    </div>
+    }
+
+    <!-- Evento Pasado Warning -->
+    @if (isEventoPasado()) {
+    <div class="warning-banner">
+        <span class="warning-icon">⚠️</span>
+        <p><strong>Este evento ya finalizó.</strong> No puedes comprar entradas para eventos pasados.</p>
+    </div>
+    <div class="actions-section">
+        <button class="btn-primary" (click)="cancel()">
+            ← Volver a Eventos
+        </button>
+    </div>
+    } @else {
+
+    <div class="compra-content">
+
+        <!-- ========== EVENTO INFO ========== -->
+        <div class="evento-info-card">
+            <h2>📋 Información del Evento</h2>
+
+            <div class="evento-details">
+                <div class="detail-header">
+                    <div class="evento-icon-large">🎭</div>
+                    <div>
+                        <h3>{{ evento()!.nombre }}</h3>
+                        <span class="badge badge-disponible">Disponible</span>
+                    </div>
+                </div>
+
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-icon">📅</span>
+                        <div>
+                            <p class="detail-label">Fecha y Hora</p>
+                            <p class="detail-value">{{ formatDate(evento()!.fecha) }}</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-icon">📍</span>
+                        <div>
+                            <p class="detail-label">Lugar</p>
+                            <p class="detail-value">{{ evento()!.lugar }}</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-icon">👥</span>
+                        <div>
+                            <p class="detail-label">Entradas Disponibles</p>
+                            <p class="detail-value">{{ evento()!.capacidad }} entradas</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-item precio-item">
+                        <span class="detail-icon">💰</span>
+                        <div>
+                            <p class="detail-label">Precio por Entrada</p>
+                            <p class="detail-value precio">{{ formatPrice(evento()!.precio) }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== FORM ========== -->
+        <div class="form-card">
+            <h2>🛒 Datos de la Compra</h2>
+
+            <form [formGroup]="compraForm" (ngSubmit)="onSubmit()">
+
+                <div class="form-group">
+                    <label for="cantidad" class="form-label">
+                        <span class="label-icon">🎫</span>
+                        Cantidad de Entradas *
+                    </label>
+                    <input id="cantidad" type="number" formControlName="cantidad" class="form-input"
+                        [class.invalid]="cantidad?.invalid && cantidad?.touched" placeholder="1" min="1"
+                        [max]="evento()!.capacidad" />
+                    @if (cantidad?.invalid && cantidad?.touched) {
+                    <div class="error-message">
+                        @if (cantidad?.errors?.['required']) {
+                        <span>⚠️ La cantidad es obligatoria</span>
+                        }
+                        @if (cantidad?.errors?.['min']) {
+                        <span>⚠️ Mínimo 1 entrada</span>
+                        }
+                        @if (cantidad?.errors?.['max']) {
+                        <span>⚠️ Máximo {{ evento()!.capacidad }} entradas disponibles</span>
+                        }
+                    </div>
+                    }
+                    <small class="form-hint">Máximo {{ evento()!.capacidad }} entradas disponibles</small>
+                </div>
+
+                <!-- Resumen de Compra -->
+                @if (compraForm.valid) {
+                <div class="resumen-card">
+                    <h3>📋 Resumen de Compra</h3>
+                    <div class="resumen-content">
+                        <div class="resumen-row">
+                            <span>Evento:</span>
+                            <strong>{{ evento()!.nombre }}</strong>
+                        </div>
+                        <div class="resumen-row">
+                            <span>Cantidad:</span>
+                            <strong>{{ cantidad?.value }} entrada(s)</strong>
+                        </div>
+                        <div class="resumen-row">
+                            <span>Precio unitario:</span>
+                            <strong>{{ formatPrice(evento()!.precio) }}</strong>
+                        </div>
+                        <div class="resumen-row resumen-total">
+                            <span>TOTAL A PAGAR:</span>
+                            <strong class="total-amount">{{ formatPrice(getTotal()) }}</strong>
+                        </div>
+                    </div>
+                    <div class="resumen-note">
+                        <span class="note-icon">ℹ️</span>
+                        <p>El pago se completará después de confirmar la compra</p>
+                    </div>
+                </div>
+                }
+
+                <!-- Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" (click)="cancel()" [disabled]="processing()">
+                        ✖ Cancelar
+                    </button>
+                    <button type="submit" class="btn-submit" [disabled]="compraForm.invalid || processing()">
+                        @if (processing()) {
+                        <span class="spinner-small"></span>
+                        Procesando...
+                        } @else {
+                        ✅ Confirmar Compra
+                        }
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+
+    }
+
+    }
+
+</div>

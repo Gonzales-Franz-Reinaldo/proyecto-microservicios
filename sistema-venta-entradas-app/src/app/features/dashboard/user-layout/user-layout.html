@@ -1,9 +1,176 @@
 <div class="user-layout">
-  <app-navbar></app-navbar>
+  
+  <!-- ========== SIDEBAR ========== -->
+  <aside class="sidebar" [class.sidebar-collapsed]="!sidebarOpen()" [class.sidebar-mobile-open]="mobileMenuOpen()">
+    
+    <!-- Logo -->
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">🎭</span>
+        @if (sidebarOpen()) {
+          <span class="logo-text">Sistema Entradas</span>
+        }
+      </div>
+      <button class="btn-toggle-sidebar" (click)="toggleSidebar()" [title]="sidebarOpen() ? 'Contraer menú' : 'Expandir menú'">
+        {{ sidebarOpen() ? '◀' : '▶' }}
+      </button>
+    </div>
 
-  <main class="user-main">
-    <router-outlet></router-outlet>
+    <!-- User Info -->
+    <div class="user-info">
+      <div class="user-avatar">
+        <span class="avatar-icon">👤</span>
+      </div>
+      @if (sidebarOpen()) {
+        <div class="user-details">
+          <p class="user-name">{{ currentUser()?.name }}</p>
+          <p class="user-role">Usuario</p>
+        </div>
+      }
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+      <ul class="nav-list">
+        
+        <!-- Dashboard -->
+        <li class="nav-item">
+          <a 
+            class="nav-link" 
+            [class.active]="isActiveRoute('/dashboard/user/dashboard')"
+            (click)="navigateTo('/dashboard/user/dashboard')"
+          >
+            <span class="nav-icon">🏠</span>
+            @if (sidebarOpen()) {
+              <span class="nav-text">Panel Principal</span>
+            }
+          </a>
+        </li>
+
+        <!-- Divider -->
+        <li class="nav-divider">
+          @if (sidebarOpen()) {
+            <span>COMPRAS</span>
+          }
+        </li>
+
+        <!-- Eventos Disponibles -->
+        <li class="nav-item">
+          <a 
+            class="nav-link" 
+            [class.active]="isActiveRoute('/dashboard/user/eventos')"
+            (click)="navigateTo('/dashboard/user/eventos')"
+          >
+            <span class="nav-icon">🎟️</span>
+            @if (sidebarOpen()) {
+              <span class="nav-text">Comprar Entradas</span>
+            }
+          </a>
+        </li>
+
+        <!-- Mis Compras -->
+        <li class="nav-item">
+          <a 
+            class="nav-link" 
+            [class.active]="isActiveRoute('/dashboard/user/mis-entradas')"
+            (click)="navigateTo('/dashboard/user/mis-entradas')"
+          >
+            <span class="nav-icon">📋</span>
+            @if (sidebarOpen()) {
+              <span class="nav-text">Mis Compras</span>
+            }
+          </a>
+        </li>
+
+        <!-- Divider -->
+        <li class="nav-divider">
+          @if (sidebarOpen()) {
+            <span>CUENTA</span>
+          }
+        </li>
+
+        <!-- Mi Perfil -->
+        <li class="nav-item">
+          <a 
+            class="nav-link" 
+            [class.active]="isActiveRoute('/dashboard/user/perfil')"
+            (click)="navigateTo('/dashboard/user/perfil')"
+          >
+            <span class="nav-icon">👤</span>
+            @if (sidebarOpen()) {
+              <span class="nav-text">Mi Perfil</span>
+            }
+          </a>
+        </li>
+
+        <!-- Cerrar Sesión -->
+        <li class="nav-item">
+          <a class="nav-link nav-link-logout" (click)="logout()">
+            <span class="nav-icon">🚪</span>
+            @if (sidebarOpen()) {
+              <span class="nav-text">Cerrar Sesión</span>
+            }
+          </a>
+        </li>
+
+      </ul>
+    </nav>
+
+    <!-- Footer -->
+    @if (sidebarOpen()) {
+      <div class="sidebar-footer">
+        <p>© 2025 Sistema Entradas</p>
+        <p class="version">v1.0.0</p>
+      </div>
+    }
+
+  </aside>
+
+  <!-- ========== MOBILE HEADER ========== -->
+  <header class="mobile-header">
+    <button class="btn-mobile-menu" (click)="toggleMobileMenu()">
+      ☰
+    </button>
+    <div class="mobile-logo">
+      <span class="logo-icon">🎭</span>
+      <span class="logo-text">Sistema Entradas</span>
+    </div>
+    <div class="mobile-user">
+      <span class="user-icon">👤</span>
+    </div>
+  </header>
+
+  <!-- Mobile Overlay -->
+  @if (mobileMenuOpen()) {
+    <div class="mobile-overlay" (click)="closeMobileMenu()"></div>
+  }
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <main class="main-content" [class.sidebar-collapsed]="!sidebarOpen()">
+    
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <div class="breadcrumb">
+        <span class="breadcrumb-icon">🏠</span>
+        <span class="breadcrumb-text">Panel de Usuario</span>
+      </div>
+      <div class="top-bar-actions">
+        <button class="btn-notification" title="Notificaciones">
+          🔔
+          <span class="notification-badge">3</span>
+        </button>
+        <button class="btn-profile" (click)="navigateTo('/dashboard/user/perfil')" title="Mi Perfil">
+          <span class="profile-avatar">👤</span>
+          <span class="profile-name">{{ currentUser()?.name }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+
   </main>
 
-  <app-footer></app-footer>
 </div>
