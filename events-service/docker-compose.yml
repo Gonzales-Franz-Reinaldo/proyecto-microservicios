@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  # Servicio MySQL para este microservicio
+  mysql-db:
+    image: mysql:8
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root         
+      MYSQL_DATABASE: db_eventos        
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./data/mysql:/var/lib/mysql     
+
+  # Microservicio Rust de eventos
+  events-service:
+    build: .
+    container_name: events-service
+    depends_on:
+      - mysql-db
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: mysql-db
+      DB_PORT: 3306
+      DB_DATABASE: db_eventos
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      PORT: 3001
+      JWT_SECRET: 80c5eb16a4570f9f2922464cb86175954971d6c8c7f5dc948703f808661c7396
+    ports:
+      - "3001:3001"
