@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb-service-user
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: gonzales
+      MONGO_INITDB_ROOT_PASSWORD: gonzales123
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - usuarios-network
+
+  usuarios-service:
+    build: .
+    container_name: usuarios-service
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+    ports:
+      - "3000:3000"
+    environment:
+      MONGO_PROTOCOL: mongodb
+      MONGO_HOST: mongodb
+      MONGO_PORT: 27017
+      MONGO_USERNAME: gonzales
+      MONGO_PASSWORD: gonzales123
+      MONGO_DATABASE: users-db
+      MONGO_AUTH_SOURCE: admin
+      NODE_ENV: production
+      PORT: 3000
+      JWT_SECRET: ${JWT_SECRET}
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - usuarios-network
+
+networks:
+  usuarios-network:
+    driver: bridge
+
+volumes:
+  mongo-data:

@@ -1,4 +1,5 @@
 # SistemaVentaEntradasApp
+# Arquitectura Modular Basada en Features (Feature-Based Modular Architecture).
 
 ```bash
 sistema-venta-entradas-app/
@@ -58,6 +59,49 @@ sistema-venta-entradas-app/
 ├── public/                        # Archivos estáticos (por defecto)
 └── ... (otros archivos como package-lock.json, etc.)
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
