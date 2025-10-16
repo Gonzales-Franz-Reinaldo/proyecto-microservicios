@@ -26,14 +26,31 @@ async fn main() -> std::io::Result<()> {
     let pool = database::init_db().await;
     
     let auth_mw = HttpAuthentication::bearer(auth::validator);
+    
+    // --- LECTURA DE FRONTEND_URLS ---
+    // Si la variable FRONTEND_URLS no existe, el programa fallará
+    let frontend_urls_str = env::var("FRONTEND_URLS")
+        .expect("La variable de entorno FRONTEND_URLS debe estar definida.");
+    
+    let frontend_urls: Vec<String> = frontend_urls_str
+        .split(',')
+        .map(|s| s.trim().to_string())
+        .collect();
+        
+    let frontend_urls_clone = frontend_urls.clone();
+    // ---------------------------------
 
     tracing::info!("[events-service]: Servidor de Eventos escuchando en puerto {}", port);
     
     HttpServer::new(move || {
         //  CONFIGURAR CORS
-        let cors = Cors::default()
-            .allowed_origin("http://localhost:4200") 
-            .allowed_origin("http://127.0.0.1:4200")
+        let mut cors = Cors::default();
+        
+        for url in &frontend_urls_clone {
+            cors = cors.allowed_origin(url);
+        }
+
+        let cors = cors
             .allowed_methods(vec!["GET", "POST", "PUT", "DELETE", "OPTIONS"])
             .allowed_headers(vec![
                 actix_web::http::header::AUTHORIZATION,
