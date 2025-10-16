@@ -25,7 +25,7 @@
     </div>
   } @else {
     
-    <!-- Stats Cards -->
+    <!-- ========== STATS CARDS ========== -->
     <div class="stats-grid">
       
       <!-- Total Usuarios (clickeable) -->
@@ -42,13 +42,16 @@
         <div class="stat-arrow">→</div>
       </div>
 
-      <!-- Eventos (placeholder) -->
-      <div class="stat-card stat-eventos" (click)="navigateTo('/dashboard/admin/eventos')">
+      <!-- Total Eventos (clickeable)  -->
+      <div class="stat-card stat-eventos" (click)="navigateTo('/dashboard/admin/eventos/lista')">
         <div class="stat-icon">🎭</div>
         <div class="stat-content">
           <h3>{{ stats().totalEventos }}</h3>
           <p>Total Eventos</p>
-          <small class="stat-detail">Próximamente disponible</small>
+          <small class="stat-detail">
+            ⏰ {{ stats().eventosProximos }} Próximos · 
+            📅 {{ stats().eventosPasados }} Pasados
+          </small>
         </div>
         <div class="stat-arrow">→</div>
       </div>
@@ -59,11 +62,17 @@
         <div class="stat-content">
           <h3>{{ stats().eventosProximos }}</h3>
           <p>Eventos Próximos</p>
-          <small class="stat-detail">Próximamente disponible</small>
+          <small class="stat-detail">
+            @if (stats().eventosProximos > 0) {
+              <span>✅ Eventos por venir</span>
+            } @else {
+              <span>No hay eventos próximos</span>
+            }
+          </small>
         </div>
       </div>
 
-      <!-- Ventas Hoy -->
+      <!-- Ventas Hoy (Placeholder) -->
       <div class="stat-card stat-ventas">
         <div class="stat-icon">💰</div>
         <div class="stat-content">
@@ -75,12 +84,13 @@
 
     </div>
 
-    <!-- Quick Actions -->
+    <!-- ========== QUICK ACTIONS ========== -->
     <div class="quick-actions">
       <h2>Acciones Rápidas</h2>
       <div class="actions-grid">
         
-        <button class="action-btn" (click)="navigateTo('/dashboard/admin/eventos/new')">
+        <!-- CREAR EVENTO  -->
+        <button class="action-btn" (click)="navigateTo('/dashboard/admin/eventos/crear')">
           <span class="action-icon">➕</span>
           <div>
             <h3>Crear Evento</h3>
@@ -96,11 +106,12 @@
           </div>
         </button>
 
-        <button class="action-btn" (click)="navigateTo('/dashboard/admin/eventos')">
+        <!--  VER EVENTOS  -->
+        <button class="action-btn" (click)="navigateTo('/dashboard/admin/eventos/lista')">
           <span class="action-icon">🎭</span>
           <div>
             <h3>Ver Eventos</h3>
-            <p>Administrar todos los eventos</p>
+            <p>{{ stats().totalEventos }} eventos disponibles</p>
           </div>
         </button>
 
@@ -111,6 +122,76 @@
             <p>Ver estadísticas y reportes</p>
           </div>
         </button>
+
+      </div>
+    </div>
+
+    <!-- ========== RESUMEN DE ACTIVIDAD ========== -->
+    <div class="activity-summary">
+      <h2>📊 Resumen del Sistema</h2>
+      <div class="summary-cards">
+        
+        <div class="summary-card">
+          <div class="summary-header">
+            <span class="summary-icon">👥</span>
+            <h3>Usuarios</h3>
+          </div>
+          <div class="summary-body">
+            <div class="summary-row">
+              <span>Total registrados:</span>
+              <strong>{{ stats().totalUsuarios }}</strong>
+            </div>
+            <div class="summary-row">
+              <span>Administradores:</span>
+              <strong>{{ stats().totalAdmins }}</strong>
+            </div>
+            <div class="summary-row">
+              <span>Usuarios regulares:</span>
+              <strong>{{ stats().totalUsers }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-header">
+            <span class="summary-icon">🎭</span>
+            <h3>Eventos</h3>
+          </div>
+          <div class="summary-body">
+            <div class="summary-row">
+              <span>Total eventos:</span>
+              <strong>{{ stats().totalEventos }}</strong>
+            </div>
+            <div class="summary-row">
+              <span>Próximos eventos:</span>
+              <strong class="text-success">{{ stats().eventosProximos }}</strong>
+            </div>
+            <div class="summary-row">
+              <span>Eventos finalizados:</span>
+              <strong class="text-muted">{{ stats().eventosPasados }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-header">
+            <span class="summary-icon">💰</span>
+            <h3>Ventas</h3>
+          </div>
+          <div class="summary-body">
+            <div class="summary-row">
+              <span>Entradas vendidas:</span>
+              <strong>0</strong>
+            </div>
+            <div class="summary-row">
+              <span>Ingresos totales:</span>
+              <strong>Bs. 0.00</strong>
+            </div>
+            <div class="summary-row">
+              <span class="info-text">📌 Próximamente disponible</span>
+            </div>
+          </div>
+        </div>
 
       </div>
     </div>

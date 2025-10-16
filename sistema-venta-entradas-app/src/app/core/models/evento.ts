@@ -11,7 +11,7 @@ export interface Evento {
 
 export interface EventoInput {
     nombre: string;
-    fecha: string; // "YYYY-MM-DD HH:mm:ss"
+    fecha: string; // "YYYY-MM-DDTHH:mm:ss"
     lugar: string;
     capacidad: number;
     precio: number;
@@ -20,4 +20,19 @@ export interface EventoInput {
 export interface EventosResponse {
     eventos: Evento[];
     total: number;
+}
+
+export interface EventoCreateResponse {
+    message: string;
+    evento: Evento;
+}
+
+export interface EventoUpdateResponse {
+    message: string;
+    id: number;
+}
+
+export interface EventoDeleteResponse {
+    message: string;
+    id: number;
 }
