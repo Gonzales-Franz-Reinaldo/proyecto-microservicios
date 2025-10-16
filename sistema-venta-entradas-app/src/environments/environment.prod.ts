@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:3000/api/v1'
+  apiUrl: 'https://api-usuarios.tudominio.com',
+  eventosApiUrl: 'https://api-eventos.tudominio.com'
 };
