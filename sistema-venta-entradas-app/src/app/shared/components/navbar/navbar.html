@@ -1,0 +1,98 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    
+    <div class="navbar-brand">
+      <span class="logo">🎫</span>
+      <span class="brand-name">EventosPro</span>
+    </div>
+
+    <div class="navbar-menu" [class.active]="isMenuOpen()">
+      
+      @if (isAdmin) {
+        <!-- Admin Menu -->
+        <a 
+          routerLink="/dashboard/admin/dashboard" 
+          routerLinkActive="active" 
+          class="nav-link"
+          (click)="closeMenu()"
+        >
+          🏠 Dashboard
+        </a>
+        <a 
+          routerLink="/dashboard/admin/usuarios/lista" 
+          routerLinkActive="active" 
+          class="nav-link"
+          (click)="closeMenu()"
+        >
+          👥 Usuarios
+        </a>
+        <a 
+          routerLink="/dashboard/admin/eventos" 
+          routerLinkActive="active" 
+          class="nav-link"
+          (click)="closeMenu()"
+        >
+          🎭 Eventos
+        </a>
+        <a 
+          routerLink="/dashboard/admin/reportes" 
+          routerLinkActive="active" 
+          class="nav-link"
+          (click)="closeMenu()"
+        >
+          📊 Reportes
+        </a>
+      }
+
+      @if (isUser) {
+        <!-- User Menu -->
+        <a 
+          routerLink="/dashboard/user/dashboard" 
+          routerLinkActive="active" 
+          class="nav-link"
+          (click)="closeMenu()"
+        >
+          🏠 Inicio
+        </a>
+        <a 
+          routerLink="/dashboard/user/eventos" 
+          routerLinkActive="active" 
+          class="nav-link"
+          (click)="closeMenu()"
+        >
+          🎭 Eventos
+        </a>
+        <a 
+          routerLink="/dashboard/user/mis-entradas" 
+          routerLinkActive="active" 
+          class="nav-link"
+          (click)="closeMenu()"
+        >
+          🎟️ Mis Entradas
+        </a>
+      }
+
+    </div>
+
+    <div class="navbar-actions">
+      @if (isAuthenticated) {
+        <div class="user-menu">
+          
+          <button class="user-avatar-btn" (click)="navigateToProfile()">
+            <div class="user-avatar">{{ currentUser()!.name.charAt(0).toUpperCase() }}</div>
+            <span class="user-name">{{ currentUser()!.name }}</span>
+          </button>
+
+          <button class="btn-logout" (click)="logout()">
+            🚪 Salir
+          </button>
+        </div>
+      }
+      
+      <button class="menu-toggle" (click)="toggleMenu()">
+        {{ isMenuOpen() ? '✖️' : '☰' }}
+      </button>
+    </div>
+
+  </div>
+</nav>

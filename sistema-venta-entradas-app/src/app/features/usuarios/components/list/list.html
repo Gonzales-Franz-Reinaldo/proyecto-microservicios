@@ -1,1 +1,111 @@
-<p>list works!</p>
+<div class="usuarios-list-container">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1>👥 Gestión de Usuarios</h1>
+            <p class="subtitle">Administra todos los usuarios del sistema</p>
+        </div>
+    </div>
+
+    @if (loading()) {
+    <!-- Loading State -->
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Cargando usuarios...</p>
+    </div>
+    } @else if (error()) {
+    <!-- Error State -->
+    <div class="error-container">
+        <div class="error-icon">⚠️</div>
+        <h3>{{ error() }}</h3>
+        <button class="btn-retry" (click)="loadUsers()">
+            🔄 Reintentar
+        </button>
+    </div>
+    } @else {
+
+    <!-- Filters Section -->
+    <div class="filters-section">
+        <div class="filter-group">
+            <label for="search">🔍 Buscar</label>
+            <input id="search" type="text" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()"
+                placeholder="Buscar por nombre o email..." class="search-input" />
+        </div>
+
+        <div class="filter-group">
+            <label for="role">👤 Filtrar por Rol</label>
+            <select id="role" [(ngModel)]="selectedRole" (ngModelChange)="onRoleChange()" class="role-select">
+                <option value="all">Todos los roles</option>
+                <option value="admin">Administradores</option>
+                <option value="user">Usuarios</option>
+            </select>
+        </div>
+
+        <div class="results-count">
+            <strong>{{ filteredUsers().length }}</strong> usuario(s) encontrado(s)
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    @if (filteredUsers().length === 0) {
+    <div class="empty-state">
+        <span class="empty-icon">📭</span>
+        <h3>No se encontraron usuarios</h3>
+        <p>Intenta ajustar los filtros de búsqueda</p>
+    </div>
+    } @else {
+    <div class="users-table-container">
+        <table class="users-table">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Fecha de Registro</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (user of filteredUsers(); track user._id) {
+                <tr class="user-row">
+                    <td>
+                        <div class="user-info">
+                            <div class="user-avatar">{{ user.name.charAt(0).toUpperCase() }}</div>
+                            <span class="user-name">{{ user.name }}</span>
+                        </div>
+                    </td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        <span [class]="'role-badge ' + getRoleBadgeClass(user.role)">
+                            {{ getRoleIcon(user.role) }} {{ user.role }}
+                        </span>
+                    </td>
+                    <td>{{ user.createdAt | date: 'dd/MM/yyyy' }}</td>
+                    <td>
+                        <span [class]="user.isActive ? 'status-active' : 'status-inactive'">
+                            {{ user.isActive ? '✅ Activo' : '❌ Inactivo' }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-action btn-view" (click)="viewDetail(user._id)" title="Ver detalles">
+                                👁️
+                            </button>
+                            <button class="btn-action btn-delete" (click)="deleteUser(user)"
+                                [disabled]="user._id === currentUser()?._id" title="Eliminar usuario">
+                                🗑️
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+
+    }
+
+</div>

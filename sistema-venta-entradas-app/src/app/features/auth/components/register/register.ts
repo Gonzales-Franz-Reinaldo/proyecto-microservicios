@@ -28,8 +28,7 @@ export class Register {
       name: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]],
-      role: ['user', [Validators.required]]
+      confirmPassword: ['', [Validators.required]]
     }, {
       validators: this.passwordMatchValidator
     });
@@ -57,8 +56,12 @@ export class Register {
     this.error.set(null);
     this.success.set(false);
 
-    // Eliminar confirmPassword antes de enviar
-    const { confirmPassword, ...registerData } = this.registerForm.value;
+    // Eliminar confirmPassword y agregar role 'user' por defecto
+    const { confirmPassword, ...formData } = this.registerForm.value;
+    const registerData = {
+      ...formData,
+      role: 'user' 
+    };
 
     this.authService.register(registerData).subscribe({
       next: () => {
@@ -83,24 +86,8 @@ export class Register {
     this.showConfirmPassword.update(val => !val);
   }
 
-  // Getters para validación
-  get name() {
-    return this.registerForm.get('name');
-  }
-
-  get email() {
-    return this.registerForm.get('email');
-  }
-
-  get password() {
-    return this.registerForm.get('password');
-  }
-
-  get confirmPassword() {
-    return this.registerForm.get('confirmPassword');
-  }
-
-  get role() {
-    return this.registerForm.get('role');
-  }
+  get name() { return this.registerForm.get('name'); }
+  get email() { return this.registerForm.get('email'); }
+  get password() { return this.registerForm.get('password'); }
+  get confirmPassword() { return this.registerForm.get('confirmPassword'); }
 }

@@ -53,9 +53,6 @@ export class Auth {
     return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/register`, userData)
       .pipe(
         tap(response => {
-          console.log('Usuario registrado exitosamente:', response.user.email);
-          // NO guardar los datos ni redirigir al dashboard
-          // Solo mostrar mensaje y redirigir al login
           alert(`¡Registro exitoso! Bienvenido ${response.user.name}. Ahora inicia sesión.`);
           this.router.navigate(['/auth/login']);
         }),
@@ -67,7 +64,6 @@ export class Auth {
    * Logout de usuario
    */
   logout(): void {
-    console.log('Cerrando sesión...');
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.USER_KEY);
     this.currentUserSubject.next(null);
@@ -100,16 +96,14 @@ export class Auth {
    * Verificar si el usuario es admin
    */
   isAdmin(): boolean {
-    const user = this.getCurrentUser();
-    return user?.role === 'admin';
+    return this.getCurrentUser()?.role === 'admin';
   }
 
   /**
    * Verificar si el usuario tiene un rol específico
    */
   hasRole(role: 'admin' | 'user'): boolean {
-    const user = this.getCurrentUser();
-    return user?.role === role;
+    return this.getCurrentUser()?.role === role;
   }
 
   // ========== Métodos privados ==========
@@ -126,20 +120,16 @@ export class Auth {
     // Actualizar estado
     this.currentUserSubject.next(response.user);
     this.isAuthenticated.set(true);
-    
-    console.log('👤 Usuario:', response.user.email);
-    console.log('🔑 Token guardado:', response.token.substring(0, 20) + '...');
   }
 
   /**
    * Redirigir según el rol del usuario
    */
   private redirectByRole(role: 'admin' | 'user'): void {
-    
     if (role === 'admin') {
-      this.router.navigate(['/usuarios/admin-dashboard']);
+      this.router.navigate(['/dashboard/admin/dashboard']); 
     } else {
-      this.router.navigate(['/usuarios/user-dashboard']);
+      this.router.navigate(['/dashboard/user/dashboard']); 
     }
   }
 
@@ -158,8 +148,7 @@ export class Auth {
     if (userStr) {
       try {
         return JSON.parse(userStr);
-      } catch (error) {
-        console.error('Error al parsear usuario desde localStorage:', error);
+      } catch {
         return null;
       }
     }
@@ -171,13 +160,9 @@ export class Auth {
    */
   private loadUserFromStorage(): void {
     const user = this.getUserFromStorage();
-    const hasToken = this.hasToken();
-    
-    if (user && hasToken) {
+    if (user && this.hasToken()) {
       this.currentUserSubject.next(user);
       this.isAuthenticated.set(true);
-    } else {
-      console.log('ℹ No hay sesión activa');
     }
   }
 
@@ -187,22 +172,16 @@ export class Auth {
   private handleError(error: any): Observable<never> {
     let errorMessage = 'Ha ocurrido un error';
     
-    console.error('Error en Auth:', error);
-    
     if (error.error?.message) {
       errorMessage = error.error.message;
     } else if (error.status === 0) {
-      errorMessage = 'No se pudo conectar con el servidor. Verifica que el backend esté corriendo en http://localhost:3000';
+      errorMessage = 'No se pudo conectar con el servidor';
     } else if (error.status === 401) {
       errorMessage = 'Credenciales incorrectas';
-    } else if (error.status === 400) {
-      errorMessage = 'Datos inválidos. Verifica los campos del formulario.';
     } else if (error.status === 409) {
-      errorMessage = 'El email ya está registrado. Intenta con otro email o inicia sesión.';
+      errorMessage = 'El email ya está registrado';
     } else if (error.status === 403) {
-      errorMessage = 'No tienes permisos para realizar esta acción';
-    } else if (error.status >= 500) {
-      errorMessage = 'Error del servidor. Intenta nuevamente más tarde.';
+      errorMessage = 'No tienes permisos';
     }
     
     return throwError(() => new Error(errorMessage));

@@ -4,7 +4,7 @@
         <div class="register-header">
             <div class="logo">🎫</div>
             <h1>Crear Cuenta</h1>
-            <p>Completa el formulario para registrarte</p>
+            <p>Regístrate como usuario</p>
         </div>
 
         <!-- Formulario de registro -->
@@ -20,12 +20,8 @@
                 </div>
                 @if (name?.invalid && name?.touched) {
                 <small class="error-message">
-                    @if (name?.errors?.['required']) {
-                    El nombre es requerido
-                    }
-                    @if (name?.errors?.['minlength']) {
-                    Mínimo 3 caracteres
-                    }
+                    @if (name?.errors?.['required']) { El nombre es requerido }
+                    @if (name?.errors?.['minlength']) { Mínimo 3 caracteres }
                 </small>
                 }
             </div>
@@ -40,12 +36,8 @@
                 </div>
                 @if (email?.invalid && email?.touched) {
                 <small class="error-message">
-                    @if (email?.errors?.['required']) {
-                    El correo es requerido
-                    }
-                    @if (email?.errors?.['email']) {
-                    Ingresa un correo válido
-                    }
+                    @if (email?.errors?.['required']) { El correo es requerido }
+                    @if (email?.errors?.['email']) { Ingresa un correo válido }
                 </small>
                 }
             </div>
@@ -63,12 +55,8 @@
                 </div>
                 @if (password?.invalid && password?.touched) {
                 <small class="error-message">
-                    @if (password?.errors?.['required']) {
-                    La contraseña es requerida
-                    }
-                    @if (password?.errors?.['minlength']) {
-                    Mínimo 6 caracteres
-                    }
+                    @if (password?.errors?.['required']) { La contraseña es requerida }
+                    @if (password?.errors?.['minlength']) { Mínimo 6 caracteres }
                 </small>
                 }
             </div>
@@ -87,31 +75,12 @@
                 </div>
                 @if (confirmPassword?.invalid && confirmPassword?.touched) {
                 <small class="error-message">
-                    @if (confirmPassword?.errors?.['required']) {
-                    Confirma tu contraseña
-                    }
+                    @if (confirmPassword?.errors?.['required']) { Confirma tu contraseña }
                 </small>
                 }
                 @if (registerForm.errors?.['passwordMismatch'] && confirmPassword?.touched) {
-                <small class="error-message">
-                    Las contraseñas no coinciden
-                </small>
+                <small class="error-message">Las contraseñas no coinciden</small>
                 }
-            </div>
-
-            <!-- Rol -->
-            <div class="form-group">
-                <label for="role">Tipo de Usuario</label>
-                <div class="input-wrapper">
-                    <span class="input-icon">⚙️</span>
-                    <select id="role" formControlName="role" class="select-input">
-                        <option value="user">Usuario Normal</option>
-                        <option value="admin">Administrador</option>
-                    </select>
-                </div>
-                <small class="info-message">
-                    ℹ️ Los administradores pueden gestionar eventos y usuarios
-                </small>
             </div>
 
             <!-- Error general -->

@@ -1,0 +1,120 @@
+<div class="admin-dashboard">
+  
+  <div class="dashboard-header">
+    <div>
+      <h1>Panel de Administración</h1>
+      <p class="welcome-message">Bienvenido, <strong>{{ currentUser()?.name }}</strong> 👑</p>
+    </div>
+    <button class="btn-refresh" (click)="refreshData()" [disabled]="loading()">
+      🔄 Actualizar
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando estadísticas...</p>
+    </div>
+  } @else if (error()) {
+    <div class="error-container">
+      <div class="error-icon">⚠️</div>
+      <h3>{{ error() }}</h3>
+      <button class="btn-retry" (click)="refreshData()">
+        🔄 Reintentar
+      </button>
+    </div>
+  } @else {
+    
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      
+      <!-- Total Usuarios (clickeable) -->
+      <div class="stat-card stat-usuarios" (click)="navigateTo('/dashboard/admin/usuarios/lista')">
+        <div class="stat-icon">👥</div>
+        <div class="stat-content">
+          <h3>{{ stats().totalUsuarios }}</h3>
+          <p>Total Usuarios</p>
+          <small class="stat-detail">
+            👑 {{ stats().totalAdmins }} Admins · 
+            👤 {{ stats().totalUsers }} Users
+          </small>
+        </div>
+        <div class="stat-arrow">→</div>
+      </div>
+
+      <!-- Eventos (placeholder) -->
+      <div class="stat-card stat-eventos" (click)="navigateTo('/dashboard/admin/eventos')">
+        <div class="stat-icon">🎭</div>
+        <div class="stat-content">
+          <h3>{{ stats().totalEventos }}</h3>
+          <p>Total Eventos</p>
+          <small class="stat-detail">Próximamente disponible</small>
+        </div>
+        <div class="stat-arrow">→</div>
+      </div>
+
+      <!-- Eventos Próximos -->
+      <div class="stat-card stat-proximos">
+        <div class="stat-icon">📅</div>
+        <div class="stat-content">
+          <h3>{{ stats().eventosProximos }}</h3>
+          <p>Eventos Próximos</p>
+          <small class="stat-detail">Próximamente disponible</small>
+        </div>
+      </div>
+
+      <!-- Ventas Hoy -->
+      <div class="stat-card stat-ventas">
+        <div class="stat-icon">💰</div>
+        <div class="stat-content">
+          <h3>{{ stats().ventasHoy }}</h3>
+          <p>Ventas Hoy</p>
+          <small class="stat-detail">Próximamente disponible</small>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <h2>Acciones Rápidas</h2>
+      <div class="actions-grid">
+        
+        <button class="action-btn" (click)="navigateTo('/dashboard/admin/eventos/new')">
+          <span class="action-icon">➕</span>
+          <div>
+            <h3>Crear Evento</h3>
+            <p>Agregar un nuevo evento</p>
+          </div>
+        </button>
+
+        <button class="action-btn" (click)="navigateTo('/dashboard/admin/usuarios/lista')">
+          <span class="action-icon">👥</span>
+          <div>
+            <h3>Ver Usuarios</h3>
+            <p>{{ stats().totalUsuarios }} usuarios registrados</p>
+          </div>
+        </button>
+
+        <button class="action-btn" (click)="navigateTo('/dashboard/admin/eventos')">
+          <span class="action-icon">🎭</span>
+          <div>
+            <h3>Ver Eventos</h3>
+            <p>Administrar todos los eventos</p>
+          </div>
+        </button>
+
+        <button class="action-btn" (click)="navigateTo('/dashboard/admin/reportes')">
+          <span class="action-icon">📊</span>
+          <div>
+            <h3>Reportes</h3>
+            <p>Ver estadísticas y reportes</p>
+          </div>
+        </button>
+
+      </div>
+    </div>
+
+  }
+
+</div>
