@@ -1,1 +1,229 @@
-<p>update works!</p>
+<div class="update-evento-container">
+
+    <!-- ========== HEADER ========== -->
+    <div class="update-header">
+        <button class="btn-back" (click)="cancel()">
+            ← Volver
+        </button>
+        <div>
+            <h1>✏️ Editar Evento</h1>
+            @if (evento()) {
+            <p class="subtitle">Modificando: <strong>{{ evento()!.nombre }}</strong></p>
+            }
+        </div>
+    </div>
+
+    <!-- ========== LOADING ========== -->
+    @if (loading()) {
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Cargando datos del evento...</p>
+    </div>
+    }
+
+    <!-- ========== ERROR LOADING ========== -->
+    @else if (error() && !evento()) {
+    <div class="error-container">
+        <div class="error-icon">⚠️</div>
+        <h3>{{ error() }}</h3>
+        <button class="btn-retry" (click)="loadEvento()">
+            🔄 Reintentar
+        </button>
+    </div>
+    }
+
+    <!-- ========== FORM ========== -->
+    @else {
+
+    <!-- Error Banner -->
+    @if (error()) {
+    <div class="error-banner">
+        <span class="error-icon">⚠️</span>
+        <p>{{ error() }}</p>
+        <button class="btn-close-error" (click)="error.set(null)">✖</button>
+    </div>
+    }
+
+    <div class="form-card">
+        <form [formGroup]="eventoForm" (ngSubmit)="onSubmit()">
+
+            <!-- Nombre -->
+            <div class="form-group">
+                <label for="nombre" class="form-label">
+                    <span class="label-icon">🎭</span>
+                    Nombre del Evento *
+                </label>
+                <input id="nombre" type="text" formControlName="nombre" class="form-input"
+                    [class.invalid]="nombre?.invalid && nombre?.touched" placeholder="Ej: Concierto de Rock"
+                    maxlength="100" />
+                @if (nombre?.invalid && nombre?.touched) {
+                <div class="error-message">
+                    @if (nombre?.errors?.['required']) {
+                    <span>⚠️ El nombre es obligatorio</span>
+                    }
+                    @if (nombre?.errors?.['minlength']) {
+                    <span>⚠️ Mínimo 3 caracteres</span>
+                    }
+                </div>
+                }
+                <small class="form-hint">{{ nombre?.value?.length || 0 }}/100 caracteres</small>
+            </div>
+
+            <!-- Fecha y Hora (Grid) -->
+            <div class="form-row">
+
+                <!-- Fecha -->
+                <div class="form-group">
+                    <label for="fecha" class="form-label">
+                        <span class="label-icon">📅</span>
+                        Fecha *
+                    </label>
+                    <input id="fecha" type="date" formControlName="fecha" class="form-input"
+                        [class.invalid]="fecha?.invalid && fecha?.touched" [min]="minDate" />
+                    @if (fecha?.invalid && fecha?.touched) {
+                    <div class="error-message">
+                        @if (fecha?.errors?.['required']) {
+                        <span>⚠️ La fecha es obligatoria</span>
+                        }
+                        @if (fecha?.errors?.['pastDate']) {
+                        <span>⚠️ La fecha no puede ser anterior a hoy</span>
+                        }
+                    </div>
+                    }
+                </div>
+
+                <!-- Hora -->
+                <div class="form-group">
+                    <label for="hora" class="form-label">
+                        <span class="label-icon">⏰</span>
+                        Hora *
+                    </label>
+                    <input id="hora" type="time" formControlName="hora" class="form-input"
+                        [class.invalid]="hora?.invalid && hora?.touched" />
+                    @if (hora?.invalid && hora?.touched) {
+                    <div class="error-message">
+                        <span>⚠️ La hora es obligatoria</span>
+                    </div>
+                    }
+                </div>
+
+            </div>
+
+            <!-- Lugar -->
+            <div class="form-group">
+                <label for="lugar" class="form-label">
+                    <span class="label-icon">📍</span>
+                    Lugar *
+                </label>
+                <input id="lugar" type="text" formControlName="lugar" class="form-input"
+                    [class.invalid]="lugar?.invalid && lugar?.touched" placeholder="Ej: Teatro Municipal"
+                    maxlength="100" />
+                @if (lugar?.invalid && lugar?.touched) {
+                <div class="error-message">
+                    @if (lugar?.errors?.['required']) {
+                    <span>⚠️ El lugar es obligatorio</span>
+                    }
+                    @if (lugar?.errors?.['minlength']) {
+                    <span>⚠️ Mínimo 3 caracteres</span>
+                    }
+                </div>
+                }
+                <small class="form-hint">{{ lugar?.value?.length || 0 }}/100 caracteres</small>
+            </div>
+
+            <!-- Capacidad y Precio (Grid) -->
+            <div class="form-row">
+
+                <!-- Capacidad -->
+                <div class="form-group">
+                    <label for="capacidad" class="form-label">
+                        <span class="label-icon">👥</span>
+                        Capacidad *
+                    </label>
+                    <input id="capacidad" type="number" formControlName="capacidad" class="form-input"
+                        [class.invalid]="capacidad?.invalid && capacidad?.touched" placeholder="100" min="1"
+                        max="100000" />
+                    @if (capacidad?.invalid && capacidad?.touched) {
+                    <div class="error-message">
+                        @if (capacidad?.errors?.['required']) {
+                        <span>⚠️ La capacidad es obligatoria</span>
+                        }
+                        @if (capacidad?.errors?.['min']) {
+                        <span>⚠️ Mínimo 1 persona</span>
+                        }
+                        @if (capacidad?.errors?.['max']) {
+                        <span>⚠️ Máximo 100,000 personas</span>
+                        }
+                    </div>
+                    }
+                    <small class="form-hint">Número de asistentes permitidos</small>
+                </div>
+
+                <!-- Precio -->
+                <div class="form-group">
+                    <label for="precio" class="form-label">
+                        <span class="label-icon">💰</span>
+                        Precio (BOB) *
+                    </label>
+                    <input id="precio" type="number" formControlName="precio" class="form-input"
+                        [class.invalid]="precio?.invalid && precio?.touched" placeholder="0.00" min="0" max="1000000"
+                        step="0.01" />
+                    @if (precio?.invalid && precio?.touched) {
+                    <div class="error-message">
+                        @if (precio?.errors?.['required']) {
+                        <span>⚠️ El precio es obligatorio</span>
+                        }
+                        @if (precio?.errors?.['min']) {
+                        <span>⚠️ El precio no puede ser negativo</span>
+                        }
+                    </div>
+                    }
+                    <small class="form-hint">Precio por entrada</small>
+                </div>
+
+            </div>
+
+            <!-- Vista Previa de Cambios -->
+            @if (eventoForm.valid && eventoForm.dirty) {
+            <div class="preview-card">
+                <h3>📋 Vista Previa de Cambios</h3>
+                <div class="preview-content">
+                    <p><strong>Evento:</strong> {{ nombre?.value }}</p>
+                    <p><strong>Fecha:</strong> {{ fecha?.value }} a las {{ hora?.value }}</p>
+                    <p><strong>Lugar:</strong> {{ lugar?.value }}</p>
+                    <p><strong>Capacidad:</strong> {{ capacidad?.value }} personas</p>
+                    <p><strong>Precio:</strong> Bs. {{ precio?.value }}</p>
+                </div>
+            </div>
+            }
+
+            <!-- Warning si no hay cambios -->
+            @if (!eventoForm.dirty) {
+            <div class="info-banner">
+                <span class="info-icon">ℹ️</span>
+                <p>No se han realizado cambios aún</p>
+            </div>
+            }
+
+            <!-- Actions -->
+            <div class="form-actions">
+                <button type="button" class="btn-cancel" (click)="cancel()" [disabled]="saving()">
+                    ✖ Cancelar
+                </button>
+                <button type="submit" class="btn-submit"
+                    [disabled]="eventoForm.invalid || !eventoForm.dirty || saving()">
+                    @if (saving()) {
+                    <span class="spinner-small"></span>
+                    Guardando...
+                    } @else {
+                    💾 Guardar Cambios
+                    }
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    }
+
+</div>

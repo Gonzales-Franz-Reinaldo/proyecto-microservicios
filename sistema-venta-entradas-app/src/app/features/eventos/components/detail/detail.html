@@ -1,1 +1,205 @@
-<p>detail works!</p>
+<div class="evento-detail-container">
+
+    <!-- ========== HEADER ========== -->
+    <div class="detail-header">
+        <button class="btn-back" (click)="goBack()">
+            ← Volver a la lista
+        </button>
+    </div>
+
+    <!-- ========== LOADING ========== -->
+    @if (loading()) {
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Cargando evento...</p>
+    </div>
+    }
+
+    <!-- ========== ERROR ========== -->
+    @else if (error()) {
+    <div class="error-container">
+        <div class="error-icon">⚠️</div>
+        <h3>{{ error() }}</h3>
+        <button class="btn-retry" (click)="loadEvento()">
+            🔄 Reintentar
+        </button>
+    </div>
+    }
+
+    <!-- ========== EVENTO DETAIL ========== -->
+    @else if (evento()) {
+    <div class="detail-content">
+
+        <!-- Main Card -->
+        <div class="main-card" [class.evento-pasado]="isEventoPasado()">
+
+            <!-- Card Header -->
+            <div class="card-header">
+                <div class="header-left">
+                    <div class="evento-icon">🎭</div>
+                    <div>
+                        <h1 class="evento-nombre">{{ evento()!.nombre }}</h1>
+                        <div class="evento-meta">
+                            <span class="badge" [class.badge-pasado]="isEventoPasado()"
+                                [class.badge-proximo]="!isEventoPasado()">
+                                {{ getEventStatus() }}
+                            </span>
+                            @if (evento()!.creado_por) {
+                            <span class="meta-item">
+                                👤 Creado por: <strong>{{ evento()!.creado_por }}</strong>
+                            </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="header-actions">
+                    <button class="btn-edit" (click)="editEvento()">
+                        ✏️ Editar
+                    </button>
+                    <button class="btn-delete" (click)="deleteEvento()">
+                        🗑️ Eliminar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="card-body">
+
+                <!-- Info Grid -->
+                <div class="info-grid">
+
+                    <!-- Fecha y Hora -->
+                    <div class="info-card">
+                        <div class="info-icon">📅</div>
+                        <div class="info-content">
+                            <h3>Fecha y Hora</h3>
+                            <p class="info-value">{{ formatDate(evento()!.fecha) }}</p>
+                            @if (!isEventoPasado()) {
+                            <p class="info-hint">{{ getEventStatus() }}</p>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Lugar -->
+                    <div class="info-card">
+                        <div class="info-icon">📍</div>
+                        <div class="info-content">
+                            <h3>Lugar</h3>
+                            <p class="info-value">{{ evento()!.lugar }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Capacidad -->
+                    <div class="info-card">
+                        <div class="info-icon">👥</div>
+                        <div class="info-content">
+                            <h3>Capacidad</h3>
+                            <p class="info-value">{{ evento()!.capacidad }} personas</p>
+                            <p class="info-hint">Aforo máximo del evento</p>
+                        </div>
+                    </div>
+
+                    <!-- Precio -->
+                    <div class="info-card">
+                        <div class="info-icon">💰</div>
+                        <div class="info-content">
+                            <h3>Precio por Entrada</h3>
+                            <p class="info-value">{{ formatPrice(evento()!.precio) }}</p>
+                            @if (evento()!.precio === 0) {
+                            <p class="info-hint">✅ Evento gratuito</p>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Estadísticas (Placeholder para futuro) -->
+                <div class="stats-section">
+                    <h2>📊 Estadísticas del Evento</h2>
+                    <div class="stats-grid">
+
+                        <div class="stat-item">
+                            <div class="stat-icon">🎟️</div>
+                            <div class="stat-content">
+                                <p class="stat-label">Entradas Vendidas</p>
+                                <p class="stat-value">0</p>
+                            </div>
+                        </div>
+
+                        <div class="stat-item">
+                            <div class="stat-icon">💵</div>
+                            <div class="stat-content">
+                                <p class="stat-label">Ingresos Generados</p>
+                                <p class="stat-value">Bs. 0.00</p>
+                            </div>
+                        </div>
+
+                        <div class="stat-item">
+                            <div class="stat-icon">📈</div>
+                            <div class="stat-content">
+                                <p class="stat-label">Porcentaje Vendido</p>
+                                <p class="stat-value">0%</p>
+                            </div>
+                        </div>
+
+                        <div class="stat-item">
+                            <div class="stat-icon">🎯</div>
+                            <div class="stat-content">
+                                <p class="stat-label">Entradas Disponibles</p>
+                                <p class="stat-value">{{ evento()!.capacidad }}</p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <p class="stats-note">💡 Las estadísticas de ventas se implementarán próximamente</p>
+                </div>
+
+            </div>
+
+            <!-- Card Footer -->
+            <div class="card-footer">
+                @if (evento()!.creado_en) {
+                <p class="footer-text">
+                    📅 Evento creado el: <strong>{{ evento()!.creado_en | date: 'dd/MM/yyyy HH:mm' }}</strong>
+                </p>
+                }
+            </div>
+
+        </div>
+
+        <!-- Quick Actions Panel -->
+        <div class="actions-panel">
+            <h3>⚡ Acciones Rápidas</h3>
+
+            <button class="action-item" (click)="editEvento()">
+                <span class="action-icon">✏️</span>
+                <div class="action-text">
+                    <p class="action-title">Editar Evento</p>
+                    <p class="action-desc">Modificar información del evento</p>
+                </div>
+            </button>
+
+            <button class="action-item action-danger" (click)="deleteEvento()">
+                <span class="action-icon">🗑️</span>
+                <div class="action-text">
+                    <p class="action-title">Eliminar Evento</p>
+                    <p class="action-desc">Eliminar permanentemente</p>
+                </div>
+            </button>
+
+            <button class="action-item" (click)="goBack()">
+                <span class="action-icon">📋</span>
+                <div class="action-text">
+                    <p class="action-title">Ver Todos</p>
+                    <p class="action-desc">Volver a la lista de eventos</p>
+                </div>
+            </button>
+
+        </div>
+
+    </div>
+    }
+
+</div>

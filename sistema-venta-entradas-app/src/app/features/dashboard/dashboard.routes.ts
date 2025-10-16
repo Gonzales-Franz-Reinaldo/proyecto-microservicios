@@ -43,15 +43,15 @@ export const DASHBOARD_ROUTES: Routes = [
           }
         ]
       },
-      // EVENTOS - Placeholder para futuro
+      // EVENTOS (NUEVA SECCIÓN)
       {
         path: 'eventos',
-        loadComponent: () => import('./components/admin-dashboard/admin-dashboard').then(m => m.AdminDashboard) 
+        loadChildren: () => import('../eventos/eventos.routes').then(m => m.EVENTOS_ROUTES)
       },
       // REPORTES - Placeholder
       {
         path: 'reportes',
-        loadComponent: () => import('./components/admin-dashboard/admin-dashboard').then(m => m.AdminDashboard) 
+        loadComponent: () => import('./components/admin-dashboard/admin-dashboard').then(m => m.AdminDashboard)
       }
     ]
   },
@@ -80,12 +80,11 @@ export const DASHBOARD_ROUTES: Routes = [
       // EVENTOS - Placeholder
       {
         path: 'eventos',
-        loadComponent: () => import('./components/user-dashboard/user-dashboard').then(m => m.UserDashboard) 
+        loadComponent: () => import('./components/user-dashboard/user-dashboard').then(m => m.UserDashboard)
       },
-      // MIS ENTRADAS - Placeholder
       {
         path: 'mis-entradas',
-        loadComponent: () => import('./components/user-dashboard/user-dashboard').then(m => m.UserDashboard) 
+        loadComponent: () => import('./components/user-dashboard/user-dashboard').then(m => m.UserDashboard)
       }
     ]
   },
