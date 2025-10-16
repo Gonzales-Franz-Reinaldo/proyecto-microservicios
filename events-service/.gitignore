@@ -5,3 +5,5 @@ Cargo.lock
 .DS_Store
 
 logs
+# Ignorar datos persistentes de MySQL
+data/
