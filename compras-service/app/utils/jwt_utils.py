@@ -75,11 +75,27 @@ def verify_jwt(
             status_code=401,
             detail=f"Token inválido: {str(e)}"
         )
+    except Exception as e:
+        logger.error(
+            f"[compras-service]: Error inesperado en validación JWT: {str(e)}",
+            exc_info=True
+        )
+        raise HTTPException(
+            status_code=401,
+            detail="Error al validar token"
+        )
 
 
-def get_current_user(token_data: dict = Security(verify_jwt)) -> dict:
+def get_current_user(
+    token_data: dict = Security(verify_jwt),
+    request: Request = None
+) -> dict:
     """Obtiene el usuario actual del token"""
-    return {
+    user_info = {
         "id": token_data["id"],
         "role": token_data["role"]
     }
+    
+    logger.debug(f"[compras-service]: Usuario extraído del token: {user_info}")
+    
+    return user_info

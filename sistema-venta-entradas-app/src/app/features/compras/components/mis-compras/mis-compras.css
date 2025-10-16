@@ -1,0 +1,493 @@
+/* ========== CONTAINER ========== */
+.mis-compras-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* ========== HEADER ========== */
+.compras-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.compras-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #1a202c;
+}
+
+.subtitle {
+  color: #718096;
+  margin: 0.5rem 0 0 0;
+}
+
+.btn-refresh {
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-refresh:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-refresh:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ========== STATS GRID ========== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid;
+}
+
+.stat-total { border-left-color: #667eea; }
+.stat-pagado { border-left-color: #48bb78; }
+.stat-pendiente { border-left-color: #ed8936; }
+.stat-cancelado { border-left-color: #718096; }
+
+.stat-icon {
+  font-size: 2.5rem;
+}
+
+.stat-content h3 {
+  margin: 0;
+  font-size: 1.75rem;
+  color: #1a202c;
+}
+
+.stat-content p {
+  margin: 0.25rem 0 0 0;
+  color: #718096;
+  font-size: 0.875rem;
+}
+
+.stat-content small {
+  display: block;
+  margin-top: 0.25rem;
+  color: #4a5568;
+  font-weight: 600;
+}
+
+/* ========== FILTERS ========== */
+.filters-section {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 0.625rem 1.25rem;
+  background: #f7fafc;
+  color: #4a5568;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+  background: #edf2f7;
+  border-color: #cbd5e0;
+}
+
+.filter-btn.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: transparent;
+}
+
+/* ========== RESULTS INFO ========== */
+.results-info {
+  margin-bottom: 1.5rem;
+  color: #718096;
+}
+
+.results-info strong {
+  color: #1a202c;
+}
+
+/* ========== COMPRAS LIST ========== */
+.compras-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.compra-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.compra-card:hover {
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.compra-card.processing {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* ========== CARD HEADER ========== */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.compra-id {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.id-label {
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: #1a202c;
+}
+
+.fecha-compra {
+  font-size: 0.875rem;
+  color: #718096;
+}
+
+.badge {
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-pendiente {
+  background: #fbbf24;
+  color: #78350f;
+}
+
+.badge-pagado {
+  background: #48bb78;
+  color: white;
+}
+
+.badge-cancelado {
+  background: #718096;
+  color: white;
+}
+
+/* ========== CARD BODY ========== */
+.card-body {
+  padding: 1.5rem;
+  display: grid;
+  gap: 1.5rem;
+}
+
+/* Evento Info */
+.evento-info {
+  display: flex;
+  gap: 1.25rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.evento-icon {
+  font-size: 3rem;
+}
+
+.evento-details {
+  flex: 1;
+}
+
+.evento-details h3 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.25rem;
+  color: #1a202c;
+}
+
+.evento-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4a5568;
+  font-size: 0.9375rem;
+}
+
+.meta-icon {
+  font-size: 1.125rem;
+}
+
+/* Compra Details */
+.compra-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  color: #4a5568;
+}
+
+.detail-label {
+  font-weight: 500;
+  font-size: 0.9375rem;
+}
+
+.detail-value {
+  font-weight: 600;
+  color: #1a202c;
+}
+
+.detail-total {
+  padding-top: 0.75rem;
+  margin-top: 0.5rem;
+  border-top: 2px solid #e2e8f0;
+  font-size: 1.125rem;
+}
+
+.detail-value.total {
+  font-size: 1.5rem;
+  color: #48bb78;
+}
+
+/* ========== CARD ACTIONS ========== */
+.card-actions {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background: #f7fafc;
+  border-top: 2px solid #e2e8f0;
+  flex-wrap: wrap;
+}
+
+.btn-detalle,
+.btn-pagar,
+.btn-cancelar,
+.btn-success,
+.btn-disabled {
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-detalle {
+  background: #edf2f7;
+  color: #4a5568;
+  border: 2px solid #cbd5e0;
+}
+
+.btn-detalle:hover:not(:disabled) {
+  background: #e2e8f0;
+}
+
+.btn-pagar {
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  color: white;
+  flex: 1;
+  justify-content: center;
+}
+
+.btn-pagar:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
+}
+
+.btn-cancelar {
+  background: #fed7d7;
+  color: #c53030;
+  border: 2px solid #fc8181;
+}
+
+.btn-cancelar:hover:not(:disabled) {
+  background: #fc8181;
+  color: white;
+}
+
+.btn-success {
+  background: #48bb78;
+  color: white;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.btn-disabled {
+  background: #e2e8f0;
+  color: #a0aec0;
+  cursor: not-allowed;
+}
+
+/* ========== SPINNER SMALL ========== */
+.spinner-small {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ========== LOADING ========== */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4rem 2rem;
+  color: #718096;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #e2e8f0;
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+/* ========== ERROR & EMPTY STATE ========== */
+.error-container,
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.error-icon,
+.empty-icon {
+  font-size: 5rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.error-container h3,
+.empty-state h3 {
+  margin: 0 0 0.5rem 0;
+  color: #1a202c;
+}
+
+.error-container p,
+.empty-state p {
+  color: #718096;
+  margin-bottom: 1.5rem;
+}
+
+.btn-retry,
+.btn-primary,
+.btn-clear-filters {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-retry:hover,
+.btn-primary:hover,
+.btn-clear-filters:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .mis-compras-container {
+    padding: 1rem;
+  }
+
+  .compras-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .card-actions {
+    flex-direction: column;
+  }
+
+  .btn-detalle,
+  .btn-pagar,
+  .btn-cancelar {
+    width: 100%;
+    justify-content: center;
+  }
+}

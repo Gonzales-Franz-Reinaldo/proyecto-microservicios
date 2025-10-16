@@ -80,11 +80,11 @@ export const DASHBOARD_ROUTES: Routes = [
       // EVENTOS - Placeholder
       {
         path: 'eventos',
-        loadComponent: () => import('./components/user-dashboard/user-dashboard').then(m => m.UserDashboard)
+        loadChildren: () => import('../compras/compras.routes').then(m => m.COMPRAS_ROUTES)
       },
       {
         path: 'mis-entradas',
-        loadComponent: () => import('./components/user-dashboard/user-dashboard').then(m => m.UserDashboard)
+        loadComponent: () => import('../compras/components/mis-compras/mis-compras').then(m => m.MisCompras)
       }
     ]
   },

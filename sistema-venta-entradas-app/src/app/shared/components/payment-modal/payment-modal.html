@@ -1,0 +1,124 @@
+@if (isOpen) {
+<div class="modal-overlay" (click)="onCancel()">
+
+    <div class="modal-container" (click)="$event.stopPropagation()">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <div class="header-content">
+                <span class="header-icon">💳</span>
+                <div>
+                    <h2>Confirmar Pago</h2>
+                    <p>Compra #{{ compraId }}</p>
+                </div>
+            </div>
+            <button class="btn-close" (click)="onCancel()" [disabled]="processing()">
+                ✖
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+
+            <!-- Total Amount -->
+            <div class="total-section">
+                <span class="total-label">Total a Pagar:</span>
+                <span class="total-amount">{{ formatPrice(total) }}</span>
+            </div>
+
+            <!-- Payment Methods -->
+            <div class="payment-methods-section">
+                <h3>💰 Selecciona el Método de Pago</h3>
+
+                <div class="methods-grid">
+                    @for (method of paymentMethods; track method.id) {
+                    <button class="method-card" [class.selected]="selectedMethod() === method.id"
+                        [class.disabled]="!method.enabled" [disabled]="!method.enabled || processing()"
+                        (click)="selectMethod(method.id)">
+                        <div class="method-icon">{{ method.icon }}</div>
+                        <div class="method-info">
+                            <h4>{{ method.name }}</h4>
+                            <p>{{ method.description }}</p>
+                            @if (!method.enabled) {
+                            <span class="badge-disabled">Próximamente</span>
+                            }
+                        </div>
+                        @if (selectedMethod() === method.id) {
+                        <div class="check-icon">✓</div>
+                        }
+                    </button>
+                    }
+                </div>
+            </div>
+
+            <!-- Reference Number (Optional) -->
+            @if (selectedMethod()) {
+            <div class="reference-section">
+                <label for="referencia" class="reference-label">
+                    <span class="label-icon">🔖</span>
+                    Número de Referencia (Opcional)
+                </label>
+                <input id="referencia" type="text" class="reference-input" placeholder="Ej: 123456789"
+                    [(ngModel)]="referencia" [disabled]="processing()" maxlength="50" />
+                <small class="reference-hint">
+                    Si realizaste una transferencia o pago QR, ingresa el número de referencia
+                </small>
+            </div>
+
+            <!-- Payment Instructions -->
+            <div class="instructions-section">
+                <h4>📋 Instrucciones:</h4>
+                @switch (selectedMethod()) {
+                @case ('tarjeta') {
+                <ul>
+                    <li>✓ Acepta las condiciones de la transacción</li>
+                    <li>✓ Verifica que el monto sea correcto</li>
+                    <li>✓ Guarda el comprobante de pago</li>
+                </ul>
+                }
+                @case ('transferencia') {
+                <ul>
+                    <li>✓ Realiza la transferencia a nuestra cuenta bancaria</li>
+                    <li>✓ Anota el número de referencia</li>
+                    <li>✓ Confirma el pago aquí con tu referencia</li>
+                </ul>
+                }
+                @case ('qr') {
+                <ul>
+                    <li>✓ Abre tu app bancaria</li>
+                    <li>✓ Escanea el código QR</li>
+                    <li>✓ Confirma el pago e ingresa la referencia</li>
+                </ul>
+                }
+                @case ('efectivo') {
+                <ul>
+                    <li>✓ Acércate a un punto de venta autorizado</li>
+                    <li>✓ Proporciona el ID de tu compra</li>
+                    <li>✓ Realiza el pago y guarda tu comprobante</li>
+                </ul>
+                }
+                }
+            </div>
+            }
+
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+            <button class="btn-cancel" (click)="onCancel()" [disabled]="processing()">
+                ✖ Cancelar
+            </button>
+            <button class="btn-confirm" (click)="onConfirm()" [disabled]="!selectedMethod() || processing()">
+                @if (processing()) {
+                <span class="spinner-small"></span>
+                Procesando...
+                } @else {
+                ✓ Confirmar Pago
+                }
+            </button>
+        </div>
+
+    </div>
+
+</div>
+}

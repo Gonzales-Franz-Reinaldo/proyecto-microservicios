@@ -1,0 +1,264 @@
+<div class="detalle-compra-container">
+
+    <!-- ========== HEADER ========== -->
+    <div class="detalle-header">
+        <button class="btn-back" (click)="volver()">
+            ← Volver
+        </button>
+        <div>
+            <h1>🎟️ Detalle de Compra</h1>
+            <p class="subtitle">Información completa de tu compra</p>
+        </div>
+    </div>
+
+    <!-- ========== LOADING ========== -->
+    @if (loading()) {
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Cargando información de la compra...</p>
+    </div>
+    }
+
+    <!-- ========== ERROR ========== -->
+    @else if (error()) {
+    <div class="error-container">
+        <div class="error-icon">⚠️</div>
+        <h3>{{ error() }}</h3>
+        <button class="btn-retry" (click)="loadCompra()">
+            🔄 Reintentar
+        </button>
+        <button class="btn-back-error" (click)="volver()">
+            ← Volver
+        </button>
+    </div>
+    }
+
+    <!-- ========== CONTENT ========== -->
+    @else if (compra()) {
+
+    <div class="detalle-content">
+
+        <!-- ========== COMPRA INFO CARD ========== -->
+        <div class="info-card">
+
+            <!-- Header con Estado -->
+            <div class="card-header">
+                <div class="header-left">
+                    <h2>Compra #{{ compra()!.id }}</h2>
+                    <p class="fecha">{{ formatDate(compra()!.fecha_compra) }}</p>
+                </div>
+                <span class="badge badge-large" [ngClass]="getEstadoBadgeClass(compra()!.estado)">
+                    {{ getEstadoIcon(compra()!.estado) }} {{ compra()!.estado | uppercase }}
+                </span>
+            </div>
+
+            <!-- Información del Evento -->
+            <div class="section-divider">
+                <h3>🎭 Información del Evento</h3>
+            </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">ID del Evento:</span>
+                    <span class="info-value">#{{ compra()!.evento_id }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Usuario:</span>
+                    <span class="info-value">{{ compra()!.usuario_id }}</span>
+                </div>
+            </div>
+
+            <!-- Detalles de la Compra -->
+            <div class="section-divider">
+                <h3>📋 Detalles de la Compra</h3>
+            </div>
+            <div class="detalle-grid">
+                <div class="detalle-row">
+                    <span class="detalle-label">Cantidad de entradas:</span>
+                    <span class="detalle-value">{{ compra()!.cantidad }} entrada(s)</span>
+                </div>
+                <div class="detalle-row">
+                    <span class="detalle-label">Precio unitario:</span>
+                    <span class="detalle-value">{{ formatPrice(compra()!.precio_unitario) }}</span>
+                </div>
+                <div class="detalle-row subtotal-row">
+                    <span class="detalle-label">Subtotal:</span>
+                    <span class="detalle-value">{{ formatPrice(compra()!.cantidad * compra()!.precio_unitario) }}</span>
+                </div>
+                <div class="detalle-row total-row">
+                    <span class="detalle-label">TOTAL:</span>
+                    <span class="detalle-value total">{{ formatPrice(compra()!.total) }}</span>
+                </div>
+            </div>
+
+            <!-- Información de Pago -->
+            @if (compra()!.estado === 'pagado') {
+            <div class="section-divider">
+                <h3>💳 Información de Pago</h3>
+            </div>
+            <div class="pago-info success-box">
+                <div class="pago-row">
+                    <span class="pago-icon">✅</span>
+                    <div class="pago-details">
+                        <strong>Pago Completado</strong>
+                        @if (compra()!.metodo_pago) {
+                        <p>Método: {{ compra()!.metodo_pago }}</p>
+                        }
+                        @if (compra()!.fecha_pago) {
+                        <div class="detail-row">
+                            <span class="detail-label">Fecha de pago:</span>
+                            <span class="detail-value">{{ formatDate(compra()!.fecha_pago) }}</span>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            }
+
+            @if (compra()!.estado === 'pendiente') {
+            <div class="section-divider">
+                <h3>⏳ Estado de Pago</h3>
+            </div>
+            <div class="pago-info warning-box">
+                <div class="pago-row">
+                    <span class="pago-icon">⏳</span>
+                    <div class="pago-details">
+                        <strong>Pago Pendiente</strong>
+                        <p>Esta compra está pendiente de pago. Completa el pago para obtener tus entradas.</p>
+                    </div>
+                </div>
+            </div>
+            }
+
+            @if (compra()!.estado === 'cancelado') {
+            <div class="section-divider">
+                <h3>❌ Estado</h3>
+            </div>
+            <div class="pago-info error-box">
+                <div class="pago-row">
+                    <span class="pago-icon">❌</span>
+                    <div class="pago-details">
+                        <strong>Compra Cancelada</strong>
+                        <p>Esta compra fue cancelada.</p>
+                    </div>
+                </div>
+            </div>
+            }
+
+        </div>
+
+        <!-- ========== ACTIONS CARD ========== -->
+        <div class="actions-card">
+            <h3>⚡ Acciones Disponibles</h3>
+
+            <div class="actions-grid">
+
+                @if (compra()!.estado === 'pendiente') {
+                <button class="action-btn action-pagar" (click)="pagarCompra()" [disabled]="processing()">
+                    @if (processing()) {
+                    <span class="spinner-small"></span>
+                    <div>
+                        <h4>Procesando...</h4>
+                        <p>Por favor espera</p>
+                    </div>
+                    } @else {
+                    <span class="action-icon">💳</span>
+                    <div>
+                        <h4>Pagar Ahora</h4>
+                        <p>Completa tu pago</p>
+                    </div>
+                    }
+                </button>
+
+                <button class="action-btn action-cancelar" (click)="cancelarCompra()" [disabled]="processing()">
+                    <span class="action-icon">❌</span>
+                    <div>
+                        <h4>Cancelar Compra</h4>
+                        <p>Anular esta compra</p>
+                    </div>
+                </button>
+                }
+
+                @if (compra()!.estado === 'pagado') {
+                <button class="action-btn action-print" (click)="printTicket()">
+                    <span class="action-icon">🖨️</span>
+                    <div>
+                        <h4>Imprimir Ticket</h4>
+                        <p>Versión imprimible</p>
+                    </div>
+                </button>
+
+                <button class="action-btn action-download" (click)="downloadTicket()">
+                    <span class="action-icon">📥</span>
+                    <div>
+                        <h4>Descargar PDF</h4>
+                        <p>Guardar en tu dispositivo</p>
+                    </div>
+                </button>
+                }
+
+                <button class="action-btn action-back" (click)="volver()">
+                    <span class="action-icon">←</span>
+                    <div>
+                        <h4>Volver</h4>
+                        <p>Mis compras</p>
+                    </div>
+                </button>
+
+            </div>
+
+            <!-- Info Notice -->
+            <div class="info-notice">
+                <span class="notice-icon">ℹ️</span>
+                <div>
+                    @if (compra()!.estado === 'pendiente') {
+                    <p><strong>Recuerda:</strong> Debes completar el pago para acceder al evento.</p>
+                    }
+                    @if (compra()!.estado === 'pagado') {
+                    <p><strong>¡Listo!</strong> Guarda este ticket para presentarlo en el evento.</p>
+                    }
+                    @if (compra()!.estado === 'cancelado') {
+                    <p><strong>Nota:</strong> Esta compra fue cancelada y no es válida para acceder al evento.</p>
+                    }
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ========== RESUMEN VISUAL ========== -->
+        @if (compra()!.estado === 'pagado') {
+        <div class="ticket-card">
+            <div class="ticket-header">
+                <h3>🎫 Tu Entrada Digital</h3>
+            </div>
+            <div class="ticket-body">
+                <div class="ticket-qr">
+                    <div class="qr-placeholder">
+                        <span class="qr-icon">📱</span>
+                        <p>Código QR</p>
+                        <small>ID: {{ compra()!.id }}</small>
+                    </div>
+                </div>
+                <div class="ticket-info">
+                    <p><strong>Evento ID:</strong> {{ compra()!.evento_id }}</p>
+                    <p><strong>Cantidad:</strong> {{ compra()!.cantidad }} entrada(s)</p>
+                    <p><strong>Total:</strong> {{ formatPrice(compra()!.total) }}</p>
+                    <p class="ticket-notice">Presenta este código en el evento</p>
+                </div>
+            </div>
+        </div>
+        }
+
+    </div>
+
+    }
+
+</div>
+
+<!-- ========== PAYMENT MODAL ========== -->
+<app-payment-modal
+  [isOpen]="paymentModalOpen()"
+  [total]="compra()?.total || 0"
+  [compraId]="compra()?.id || 0"
+  (confirm)="onPaymentConfirm($event)"
+  (cancel)="onPaymentCancel()"
+></app-payment-modal>

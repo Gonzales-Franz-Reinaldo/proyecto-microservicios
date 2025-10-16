@@ -1,84 +1,158 @@
-<div class="user-dashboard">
+<div class="user-dashboard-container">
   
-  <div class="dashboard-header">
-    <h1>¡Bienvenido de nuevo!</h1>
-    <p class="welcome-message">Hola, <strong>{{ currentUser()?.name }}</strong> 🎉</p>
+  <!-- ========== WELCOME SECTION ========== -->
+  <div class="welcome-section">
+    <div class="welcome-content">
+      <h1>{{ getSaludo() }}, {{ currentUser()?.name || 'Usuario' }}! 👋</h1>
+      <p>Bienvenido a tu panel de control de entradas</p>
+    </div>
+    <div class="welcome-icon">🎭</div>
   </div>
 
+  <!-- ========== QUICK ACTIONS ========== -->
+  <div class="quick-actions-section">
+    <h2>⚡ Acciones Rápidas</h2>
+    <div class="actions-grid">
+      
+      <button class="action-card action-primary" (click)="navigateTo('/dashboard/user/eventos')">
+        <div class="action-icon">🎟️</div>
+        <div class="action-content">
+          <h3>Comprar Entradas</h3>
+          <p>Explora eventos disponibles</p>
+        </div>
+        <div class="action-arrow">→</div>
+      </button>
+
+      <button class="action-card action-success" (click)="navigateTo('/dashboard/user/mis-entradas')">
+        <div class="action-icon">📋</div>
+        <div class="action-content">
+          <h3>Mis Compras</h3>
+          <p>Ver historial completo</p>
+        </div>
+        <div class="action-arrow">→</div>
+      </button>
+
+      <button class="action-card action-info" (click)="navigateTo('/dashboard/user/perfil')">
+        <div class="action-icon">👤</div>
+        <div class="action-content">
+          <h3>Mi Perfil</h3>
+          <p>Gestionar datos personales</p>
+        </div>
+        <div class="action-arrow">→</div>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ========== ESTADISTICAS ========== -->
   @if (loading()) {
-    <div class="loading-container">
+    <div class="loading-stats">
       <div class="spinner"></div>
-      <p>Cargando...</p>
+      <p>Cargando estadísticas...</p>
     </div>
   } @else {
-    
-    <!-- Hero Section -->
-    <div class="hero-section">
-      <div class="hero-content">
-        <h2>Descubre eventos increíbles</h2>
-        <p>Explora nuestra selección de eventos y consigue tus entradas</p>
-        <button class="btn-primary" (click)="navigateTo('/user/eventos')">
-          🎭 Ver Eventos Disponibles
-        </button>
-      </div>
-      <div class="hero-image">
-        <span class="hero-emoji">🎉</span>
-      </div>
-    </div>
-
-    <!-- Quick Stats -->
-    <div class="quick-stats">
-      <div class="stat-item">
-        <span class="stat-icon">🎟️</span>
-        <div>
-          <h3>0</h3>
-          <p>Mis Entradas</p>
-        </div>
-      </div>
-
-      <div class="stat-item">
-        <span class="stat-icon">🎭</span>
-        <div>
-          <h3>0</h3>
-          <p>Eventos Asistidos</p>
-        </div>
-      </div>
-
-      <div class="stat-item">
-        <span class="stat-icon">⭐</span>
-        <div>
-          <h3>0</h3>
-          <p>Favoritos</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Features -->
-    <div class="features-section">
-      <h2>¿Qué puedes hacer?</h2>
-      <div class="features-grid">
+    <div class="estadisticas-section">
+      <h2>📊 Mis Estadísticas</h2>
+      
+      <div class="stats-grid">
         
-        <div class="feature-card" (click)="navigateTo('/user/eventos')">
-          <span class="feature-icon">🎭</span>
-          <h3>Explorar Eventos</h3>
-          <p>Descubre eventos cerca de ti</p>
+        <!-- Total Compras -->
+        <div class="stat-card stat-total">
+          <div class="stat-header">
+            <span class="stat-icon">🎫</span>
+            <span class="stat-label">Total Compras</span>
+          </div>
+          <div class="stat-value">{{ estadisticas().totalCompras }}</div>
+          <div class="stat-footer">
+            <span class="stat-trend">Todas las compras realizadas</span>
+          </div>
         </div>
 
-        <div class="feature-card" (click)="navigateTo('/user/mis-entradas')">
-          <span class="feature-icon">🎟️</span>
-          <h3>Mis Entradas</h3>
-          <p>Gestiona tus compras</p>
+        <!-- Pagadas -->
+        <div class="stat-card stat-pagadas">
+          <div class="stat-header">
+            <span class="stat-icon">✅</span>
+            <span class="stat-label">Pagadas</span>
+          </div>
+          <div class="stat-value">{{ estadisticas().comprasPagadas }}</div>
+          <div class="stat-footer">
+            <span class="stat-trend">{{ formatPrice(estadisticas().totalGastado) }}</span>
+          </div>
         </div>
 
-        <div class="feature-card" (click)="navigateTo('/user/perfil')">
-          <span class="feature-icon">👤</span>
-          <h3>Mi Perfil</h3>
-          <p>Actualiza tu información</p>
+        <!-- Pendientes -->
+        <div class="stat-card stat-pendientes">
+          <div class="stat-header">
+            <span class="stat-icon">⏳</span>
+            <span class="stat-label">Pendientes</span>
+          </div>
+          <div class="stat-value">{{ estadisticas().comprasPendientes }}</div>
+          <div class="stat-footer">
+            @if (estadisticas().comprasPendientes > 0) {
+              <button class="btn-pagar-pendientes" (click)="navigateTo('/dashboard/user/mis-entradas')">
+                Pagar ahora →
+              </button>
+            } @else {
+              <span class="stat-trend">Sin compras pendientes</span>
+            }
+          </div>
+        </div>
+
+        <!-- Canceladas -->
+        <div class="stat-card stat-canceladas">
+          <div class="stat-header">
+            <span class="stat-icon">❌</span>
+            <span class="stat-label">Canceladas</span>
+          </div>
+          <div class="stat-value">{{ estadisticas().comprasCanceladas }}</div>
+          <div class="stat-footer">
+            <span class="stat-trend">Compras anuladas</span>
+          </div>
         </div>
 
       </div>
     </div>
-
   }
+
+  <!-- ========== INFORMACION ADICIONAL ========== -->
+  <div class="info-section">
+    <div class="info-card info-tips">
+      <h3>💡 Consejos Útiles</h3>
+      <ul>
+        <li>✅ Completa tus pagos pendientes para asegurar tu entrada</li>
+        <li>📱 Guarda tus tickets digitales en tu dispositivo</li>
+        <li>⏰ Compra con anticipación para mejores lugares</li>
+        <li>🎭 Revisa la información del evento antes de comprar</li>
+      </ul>
+    </div>
+
+    <div class="info-card info-help">
+      <h3>❓ ¿Necesitas Ayuda?</h3>
+      <p>Si tienes alguna duda sobre tus compras o necesitas asistencia, contáctanos.</p>
+      <div class="help-buttons">
+        <button class="btn-help">📧 Contactar Soporte</button>
+        <button class="btn-help">📖 Ver Guía</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== USUARIO INFO ========== -->
+  <div class="user-info-section">
+    <div class="user-info-card">
+      <div class="user-avatar">
+        <span class="avatar-icon">👤</span>
+      </div>
+      <div class="user-details">
+        <h3>{{ currentUser()?.name }}</h3>
+        <p class="user-email">{{ currentUser()?.email }}</p>
+        <p class="user-role">
+          <span class="role-badge">{{ currentUser()?.role }}</span>
+        </p>
+      </div>
+      <button class="btn-edit-profile" (click)="navigateTo('/dashboard/user/perfil')">
+        ✏️ Editar Perfil
+      </button>
+    </div>
+  </div>
 
 </div>
