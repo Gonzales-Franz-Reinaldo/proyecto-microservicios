@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentación Angular 20 - Sistema de Venta de Entradas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide {
+            width: 90%;
+            max-width: 1200px;
+            height: 80vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 4rem;
+            display: none;
+            flex-direction: column;
+            position: relative;
+            animation: slideIn 0.5s ease;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide-number {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        h2 {
+            color: #764ba2;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 1rem;
+        }
+
+        h3 {
+            color: #667eea;
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        p, li {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li::before {
+            content: "✓";
+            color: #48bb78;
+            font-weight: bold;
+            display: inline-block;
+            width: 1.5em;
+            font-size: 1.5rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #666;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 5rem;
+            margin: 2rem 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 2px solid #667eea;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            font-size: 1.5rem;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 2px solid #667eea;
+        }
+
+        .code-block .comment {
+            color: #94a3b8;
+        }
+
+        .code-block .keyword {
+            color: #c678dd;
+        }
+
+        .code-block .string {
+            color: #98c379;
+        }
+
+        .architecture-diagram {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .arch-box {
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            padding: 1rem 2rem;
+            margin: 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            color: #667eea;
+            min-width: 150px;
+        }
+
+        .arrow {
+            font-size: 2rem;
+            color: #667eea;
+            margin: 0 1rem;
+        }
+
+        .navigation {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .tech-badge {
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #ffd70015 0%, #ffa50015 100%);
+            border-left: 4px solid #ffa500;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+        }
+
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-list {
+            background: #f7fafc;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .feature-list h4 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 2rem;
+                height: 90vh;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            .grid, .two-columns {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        
+        <!-- SLIDE 1: PORTADA -->
+        <div class="slide active" data-slide="1">
+            <div class="slide-number">1 / 12</div>
+            <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                <div class="logo">🅰️</div>
+                <h1>Angular 20</h1>
+                <p class="subtitle">Framework para Aplicaciones Web Modernas</p>
+                <div class="highlight">
+                    <h3 style="margin-top: 0;">Sistema de Venta de Entradas</h3>
+                    <p style="text-align: center;">Arquitectura de Microservicios con Angular 20</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: ¿QUÉ ES ANGULAR? -->
+        <div class="slide" data-slide="2">
+            <div class="slide-number">2 / 12</div>
+            <h2>¿Qué es Angular?</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>📱 Framework TypeScript</h3>
+                    <p>Framework de código abierto desarrollado y mantenido por Google para construir aplicaciones web dinámicas.</p>
+                </div>
+                <div class="card">
+                    <h3>🎯 Single Page Application</h3>
+                    <p>Permite crear SPAs con una experiencia de usuario fluida sin recargas de página.</p>
+                </div>
+                <div class="card">
+                    <h3>🔧 Basado en Componentes</h3>
+                    <p>Arquitectura modular donde cada componente encapsula su HTML, CSS y lógica TypeScript.</p>
+                </div>
+                <div class="card">
+                    <h3>⚡ Alto Rendimiento</h3>
+                    <p>Optimización automática, lazy loading, y compilación AOT para aplicaciones rápidas.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: TECNOLOGÍAS UTILIZADAS -->
+        <div class="slide" data-slide="3">
+            <div class="slide-number">3 / 12</div>
+            <h2>🛠️ Stack Tecnológico del Proyecto</h2>
+            <div class="tech-stack">
+                <div class="tech-badge">Angular 20.3.5</div>
+                <div class="tech-badge">TypeScript 5.7.2</div>
+                <div class="tech-badge">RxJS 7.8.0</div>
+                <div class="tech-badge">Standalone Components</div>
+                <div class="tech-badge">Signals API</div>
+                <div class="tech-badge">Angular Router</div>
+                <div class="tech-badge">HTTP Client</div>
+                <div class="tech-badge">FormsModule</div>
+                <div class="tech-badge">CommonModule</div>
+            </div>
+            <div class="highlight" style="margin-top: 2rem;">
+                <h3>🎨 Herramientas de Desarrollo</h3>
+                <div class="tech-stack">
+                    <div class="tech-badge">Vite (Build Tool)</div>
+                    <div class="tech-badge">ESLint</div>
+                    <div class="tech-badge">Jasmine + Karma</div>
+                    <div class="tech-badge">Docker</div>
+                    <div class="tech-badge">Nginx</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: ARQUITECTURA DEL PROYECTO -->
+        <div class="slide" data-slide="4">
+            <div class="slide-number">4 / 12</div>
+            <h2>🏗️ Arquitectura del Proyecto</h2>
+            <div class="architecture-diagram">
+                <div class="arch-box">src/app</div>
+                <span class="arrow">→</span>
+                <div class="arch-box">core</div>
+                <span class="arrow">→</span>
+                <div class="arch-box">features</div>
+                <span class="arrow">→</span>
+                <div class="arch-box">shared</div>
+            </div>
+            <div class="two-columns" style="margin-top: 2rem;">
+                <div class="feature-list">
+                    <h4>📦 Core Module</h4>
+                    <ul>
+                        <li>Guards (Auth, Role)</li>
+                        <li>Interceptors (Auth)</li>
+                        <li>Services (Auth, HTTP)</li>
+                        <li>Models (Interfaces)</li>
+                    </ul>
+                </div>
+                <div class="feature-list">
+                    <h4>🎯 Features Modules</h4>
+                    <ul>
+                        <li>Auth (Login, Register)</li>
+                        <li>Dashboard (User, Admin)</li>
+                        <li>Eventos (CRUD)</li>
+                        <li>Compras (Tickets)</li>
+                        <li>Usuarios (Gestión)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: ESTRUCTURA DE CARPETAS -->
+        <div class="slide" data-slide="5">
+            <div class="slide-number">5 / 12</div>
+            <h2>📁 Estructura de Carpetas</h2>
+            <div class="code-block">
+<span class="comment">// Organización del proyecto</span>
+src/app/
+├── <span class="keyword">core/</span>              <span class="comment">// Servicios y lógica central</span>
+│   ├── guards/         <span class="comment">// Protección de rutas</span>
+│   ├── interceptors/   <span class="comment">// Manejo de HTTP</span>
+│   ├── models/         <span class="comment">// Interfaces TypeScript</span>
+│   └── services/       <span class="comment">// Auth, HTTP</span>
+├── <span class="keyword">features/</span>          <span class="comment">// Módulos funcionales</span>
+│   ├── auth/           <span class="comment">// Autenticación</span>
+│   ├── dashboard/      <span class="comment">// Dashboards por rol</span>
+│   ├── eventos/        <span class="comment">// Gestión de eventos</span>
+│   ├── compras/        <span class="comment">// Sistema de compras</span>
+│   └── usuarios/       <span class="comment">// Gestión de usuarios</span>
+├── <span class="keyword">shared/</span>            <span class="comment">// Componentes reutilizables</span>
+│   ├── components/     <span class="comment">// Navbar, Footer, Modal</span>
+│   ├── directives/     <span class="comment">// Directivas personalizadas</span>
+│   └── pipes/          <span class="comment">// Pipes personalizados</span>
+└── <span class="keyword">environments/</span>      <span class="comment">// Configuración por entorno</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: COMANDOS PRINCIPALES -->
+        <div class="slide" data-slide="6">
+            <div class="slide-number">6 / 12</div>
+            <h2>⌨️ Comandos Angular CLI</h2>
+            <div class="code-block">
+<span class="comment"># Crear nuevo proyecto</span>
+<span class="keyword">ng new</span> <span class="string">sistema-venta-entradas-app</span>
+
+<span class="comment"># Servir aplicación en desarrollo</span>
+<span class="keyword">ng serve</span> --open
+
+<span class="comment"># Generar componente standalone</span>
+<span class="keyword">ng g c</span> features/eventos/components/list --standalone
+
+<span class="comment"># Generar servicio</span>
+<span class="keyword">ng g s</span> core/services/auth
+
+<span class="comment"># Generar guard</span>
+<span class="keyword">ng g g</span> core/guards/auth
+
+<span class="comment"># Compilar para producción</span>
+<span class="keyword">ng build</span> --configuration production
+
+<span class="comment"># Ejecutar tests</span>
+<span class="keyword">ng test</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: COMPONENTES STANDALONE -->
+        <div class="slide" data-slide="7">
+            <div class="slide-number">7 / 12</div>
+            <h2>🧩 Standalone Components (Angular 14+)</h2>
+            <div class="code-block">
+<span class="keyword">import</span> { Component } <span class="keyword">from</span> <span class="string">'@angular/core'</span>;
+<span class="keyword">import</span> { CommonModule } <span class="keyword">from</span> <span class="string">'@angular/common'</span>;
+<span class="keyword">import</span> { FormsModule } <span class="keyword">from</span> <span class="string">'@angular/forms'</span>;
+
+@Component({
+  selector: <span class="string">'app-login'</span>,
+  <span class="keyword">standalone: true</span>, <span class="comment">// ✨ Sin NgModule</span>
+  imports: [CommonModule, FormsModule],
+  templateUrl: <span class="string">'./login.html'</span>,
+  styleUrl: <span class="string">'./login.css'</span>
+})
+<span class="keyword">export class</span> Login {
+  email = <span class="string">''</span>;
+  password = <span class="string">''</span>;
+  
+  onSubmit() {
+    <span class="comment">// Lógica de login</span>
+  }
+}
+            </div>
+            <div class="highlight">
+                <p><strong>Ventajas:</strong> Menos código boilerplate, mejor tree-shaking, más modular</p>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: SIGNALS API -->
+        <div class="slide" data-slide="8">
+            <div class="slide-number">8 / 12</div>
+            <h2>📡 Signals API (Angular 16+)</h2>
+            <div class="code-block">
+<span class="keyword">import</span> { Component, signal } <span class="keyword">from</span> <span class="string">'@angular/core'</span>;
+
+@Component({
+  selector: <span class="string">'app-eventos-list'</span>,
+  standalone: <span class="keyword">true</span>,
+  template: <span class="string">`
+    &lt;h2&gt;Eventos: {{ eventos().length }}&lt;/h2&gt;
+    &lt;div *ngFor="let evento of eventos()"&gt;
+      {{ evento.nombre }}
+    &lt;/div&gt;
+  `</span>
+})
+<span class="keyword">export class</span> EventosList {
+  <span class="comment">// Signals - Estado reactivo sin Zone.js</span>
+  eventos = signal&lt;Evento[]&gt;([]);
+  loading = signal(<span class="keyword">false</span>);
+  
+  loadEventos() {
+    <span class="keyword">this</span>.loading.set(<span class="keyword">true</span>);
+    <span class="keyword">this</span>.eventosService.getAll().subscribe(data => {
+      <span class="keyword">this</span>.eventos.set(data);
+      <span class="keyword">this</span>.loading.set(<span class="keyword">false</span>);
+    });
+  }
+}
+            </div>
+        </div>
+
+        <!-- SLIDE 9: ROUTING Y GUARDS -->
+        <div class="slide" data-slide="9">
+            <div class="slide-number">9 / 12</div>
+            <h2>🛣️ Routing y Guards</h2>
+            <div class="code-block">
+<span class="comment">// app.routes.ts</span>
+<span class="keyword">export const</span> routes: Routes = [
+  { path: <span class="string">''</span>, redirectTo: <span class="string">'/auth/login'</span>, pathMatch: <span class="string">'full'</span> },
+  
+  <span class="comment">// Rutas públicas</span>
+  { 
+    path: <span class="string">'auth'</span>, 
+    loadChildren: () => <span class="keyword">import</span>(<span class="string">'./features/auth/auth.routes'</span>)
+  },
+  
+  <span class="comment">// Rutas protegidas con AuthGuard</span>
+  {
+    path: <span class="string">'dashboard'</span>,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: <span class="string">'user'</span>,
+        canActivate: [roleGuard],
+        data: { roles: [<span class="string">'user'</span>] },
+        loadChildren: () => <span class="keyword">import</span>(<span class="string">'./features/dashboard/...'</span>)
+      }
+    ]
+  }
+];
+            </div>
+        </div>
+
+        <!-- SLIDE 10: SERVICIOS Y HTTP -->
+        <div class="slide" data-slide="10">
+            <div class="slide-number">10 / 12</div>
+            <h2>🌐 Servicios y HTTP Client</h2>
+            <div class="code-block">
+<span class="keyword">import</span> { HttpClient } <span class="keyword">from</span> <span class="string">'@angular/common/http'</span>;
+<span class="keyword">import</span> { Injectable, inject } <span class="keyword">from</span> <span class="string">'@angular/core'</span>;
+
+@Injectable({ providedIn: <span class="string">'root'</span> })
+<span class="keyword">export class</span> EventosService {
+  <span class="keyword">private</span> http = inject(HttpClient);
+  <span class="keyword">private</span> apiUrl = <span class="string">'http://localhost:3001/eventos'</span>;
+
+  getAll() {
+    <span class="keyword">return</span> <span class="keyword">this</span>.http.get&lt;Evento[]&gt;(<span class="keyword">this</span>.apiUrl);
+  }
+
+  getById(id: number) {
+    <span class="keyword">return</span> <span class="keyword">this</span>.http.get&lt;Evento&gt;(`${<span class="keyword">this</span>.apiUrl}/${id}`);
+  }
+
+  create(evento: EventoCreate) {
+    <span class="keyword">return</span> <span class="keyword">this</span>.http.post&lt;Evento&gt;(<span class="keyword">this</span>.apiUrl, evento);
+  }
+}
+            </div>
+        </div>
+
+        <!-- SLIDE 11: INTERCEPTORES -->
+        <div class="slide" data-slide="11">
+            <div class="slide-number">11 / 12</div>
+            <h2>🔒 HTTP Interceptors</h2>
+            <div class="code-block">
+<span class="keyword">import</span> { HttpInterceptorFn } <span class="keyword">from</span> <span class="string">'@angular/common/http'</span>;
+
+<span class="keyword">export const</span> authInterceptor: HttpInterceptorFn = (req, next) => {
+  <span class="keyword">const</span> token = localStorage.getItem(<span class="string">'access_token'</span>);
+  
+  <span class="comment">// Lista de APIs que requieren token</span>
+  <span class="keyword">const</span> apiUrls = [
+    <span class="string">'http://localhost:3000'</span>,  <span class="comment">// Usuarios</span>
+    <span class="string">'http://localhost:3001'</span>,  <span class="comment">// Eventos</span>
+    <span class="string">'http://localhost:3002'</span>   <span class="comment">// Compras</span>
+  ];
+  
+  <span class="keyword">const</span> isApiRequest = apiUrls.some(url => req.url.startsWith(url));
+  
+  <span class="keyword">if</span> (token && isApiRequest) {
+    <span class="keyword">const</span> cloned = req.clone({
+      setHeaders: { Authorization: `Bearer ${token}` }
+    });
+    <span class="keyword">return</span> next(cloned);
+  }
+  
+  <span class="keyword">return</span> next(req);
+};
+            </div>
+        </div>
+
+        <!-- SLIDE 12: DOCKERIZACIÓN -->
+        <div class="slide" data-slide="12">
+            <div class="slide-number">12 / 12</div>
+            <h2>🐳 Dockerización de la Aplicación</h2>
+            <div class="code-block">
+<span class="comment"># Dockerfile Multi-stage Build</span>
+<span class="keyword">FROM</span> node:20-alpine <span class="keyword">AS</span> build
+<span class="keyword">WORKDIR</span> /app
+<span class="keyword">COPY</span> package*.json ./
+<span class="keyword">RUN</span> npm ci
+<span class="keyword">COPY</span> . .
+<span class="keyword">RUN</span> npm run build
+
+<span class="keyword">FROM</span> nginx:alpine
+<span class="keyword">COPY</span> --from=build /app/dist/sistema-venta-entradas-app/browser /usr/share/nginx/html
+<span class="keyword">COPY</span> nginx.conf /etc/nginx/conf.d/default.conf
+<span class="keyword">EXPOSE</span> 80
+<span class="keyword">CMD</span> [<span class="string">"nginx"</span>, <span class="string">"-g"</span>, <span class="string">"daemon off;"</span>]
+            </div>
+            <div class="highlight" style="margin-top: 1rem;">
+                <h3>🚀 Comandos Docker</h3>
+                <div class="code-block" style="font-size: 0.9rem;">
+docker-compose build   <span class="comment"># Construir imagen</span>
+docker-compose up -d   <span class="comment"># Ejecutar contenedor</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- NAVEGACIÓN -->
+        <div class="navigation">
+            <button id="prevBtn" onclick="changeSlide(-1)">◀ Anterior</button>
+            <button id="nextBtn" onclick="changeSlide(1)">Siguiente ▶</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 12;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            if (n > totalSlides) {
+                currentSlide = totalSlides;
+                return;
+            }
+            if (n < 1) {
+                currentSlide = 1;
+                return;
+            }
+
+            currentSlide = n;
+
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            slides[currentSlide - 1].classList.add('active');
+
+            // Deshabilitar botones en los extremos
+            prevBtn.disabled = currentSlide === 1;
+            nextBtn.disabled = currentSlide === totalSlides;
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // Navegación con teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        // Inicializar
+        showSlide(1);
+    </script>
+</body>
+</html>

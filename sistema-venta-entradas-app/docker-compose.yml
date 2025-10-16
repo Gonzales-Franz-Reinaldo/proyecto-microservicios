@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  angular-app:
+    build: .
+    container_name: sistema-venta-entradas-app
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    environment:
+      NODE_ENV: production
