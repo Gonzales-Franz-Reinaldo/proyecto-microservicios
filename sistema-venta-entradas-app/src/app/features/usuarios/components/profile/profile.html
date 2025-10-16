@@ -1,1 +1,120 @@
-<p>profile works!</p>
+<div class="profile-container">
+
+    @if (loading()) {
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Cargando perfil...</p>
+    </div>
+    } @else if (error()) {
+    <div class="error-container">
+        <div class="error-icon">⚠️</div>
+        <h3>{{ error() }}</h3>
+        <button class="btn-retry" (click)="loadProfile()">
+            🔄 Reintentar
+        </button>
+    </div>
+    } @else if (user()) {
+
+    <div class="page-header">
+        <h1>👤 Mi Perfil</h1>
+        <p class="subtitle">Administra tu información personal</p>
+    </div>
+
+    <div class="profile-card">
+
+        <!-- Avatar Section -->
+        <div class="avatar-section">
+            <div class="user-avatar-large">
+                {{ user()!.name.charAt(0).toUpperCase() }}
+            </div>
+            <span [class]="'role-badge ' + (user()!.role === 'admin' ? 'badge-admin' : 'badge-user')">
+                {{ user()!.role === 'admin' ? '👑 Admin' : '👤 Usuario' }}
+            </span>
+        </div>
+
+        @if (!editing()) {
+        <!-- View Mode -->
+        <div class="profile-info">
+
+            <div class="info-item">
+                <label>Nombre</label>
+                <p>{{ user()!.name }}</p>
+            </div>
+
+            <div class="info-item">
+                <label>Correo Electrónico</label>
+                <p>{{ user()!.email }}</p>
+            </div>
+
+            <div class="info-item">
+                <label>Rol</label>
+                <p>
+                    <span [class]="'role-badge-inline ' + (user()!.role === 'admin' ? 'badge-admin' : 'badge-user')">
+                        {{ user()!.role === 'admin' ? '👑 Administrador' : '👤 Usuario' }}
+                    </span>
+                </p>
+            </div>
+
+            <div class="info-item">
+                <label>Miembro desde</label>
+                <p>{{ user()!.createdAt | date: 'dd/MM/yyyy' }}</p>
+            </div>
+
+        </div>
+
+        <div class="actions">
+            <button class="btn-primary" (click)="toggleEdit()">
+                ✏️ Editar Perfil
+            </button>
+        </div>
+
+        } @else {
+        <!-- Edit Mode -->
+        <form [formGroup]="profileForm" class="edit-form">
+
+            <div class="form-group">
+                <label for="name">Nombre *</label>
+                <input id="name" type="text" formControlName="name" placeholder="Tu nombre completo"
+                    [class.invalid]="name?.invalid && name?.touched" />
+                @if (name?.invalid && name?.touched) {
+                <small class="error-message">
+                    @if (name?.errors?.['required']) { El nombre es requerido }
+                    @if (name?.errors?.['minlength']) { Mínimo 3 caracteres }
+                </small>
+                }
+            </div>
+
+            <div class="form-group">
+                <label for="email">Correo Electrónico *</label>
+                <input id="email" type="email" formControlName="email" placeholder="tu@email.com"
+                    [class.invalid]="email?.invalid && email?.touched" />
+                @if (email?.invalid && email?.touched) {
+                <small class="error-message">
+                    @if (email?.errors?.['required']) { El correo es requerido }
+                    @if (email?.errors?.['email']) { Ingresa un correo válido }
+                </small>
+                }
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn-success" (click)="saveChanges()"
+                    [disabled]="saving() || profileForm.invalid">
+                    @if (saving()) {
+                    <span class="spinner-small"></span> Guardando...
+                    } @else {
+                    💾 Guardar Cambios
+                    }
+                </button>
+                <button type="button" class="btn-secondary" (click)="toggleEdit()" [disabled]="saving()">
+                    ✖️ Cancelar
+                </button>
+            </div>
+
+        </form>
+        }
+
+    </div>
+
+    }
+
+</div>

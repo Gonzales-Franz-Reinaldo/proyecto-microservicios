@@ -1,0 +1,84 @@
+<div class="user-dashboard">
+  
+  <div class="dashboard-header">
+    <h1>¡Bienvenido de nuevo!</h1>
+    <p class="welcome-message">Hola, <strong>{{ currentUser()?.name }}</strong> 🎉</p>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando...</p>
+    </div>
+  } @else {
+    
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <div class="hero-content">
+        <h2>Descubre eventos increíbles</h2>
+        <p>Explora nuestra selección de eventos y consigue tus entradas</p>
+        <button class="btn-primary" (click)="navigateTo('/user/eventos')">
+          🎭 Ver Eventos Disponibles
+        </button>
+      </div>
+      <div class="hero-image">
+        <span class="hero-emoji">🎉</span>
+      </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="quick-stats">
+      <div class="stat-item">
+        <span class="stat-icon">🎟️</span>
+        <div>
+          <h3>0</h3>
+          <p>Mis Entradas</p>
+        </div>
+      </div>
+
+      <div class="stat-item">
+        <span class="stat-icon">🎭</span>
+        <div>
+          <h3>0</h3>
+          <p>Eventos Asistidos</p>
+        </div>
+      </div>
+
+      <div class="stat-item">
+        <span class="stat-icon">⭐</span>
+        <div>
+          <h3>0</h3>
+          <p>Favoritos</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="features-section">
+      <h2>¿Qué puedes hacer?</h2>
+      <div class="features-grid">
+        
+        <div class="feature-card" (click)="navigateTo('/user/eventos')">
+          <span class="feature-icon">🎭</span>
+          <h3>Explorar Eventos</h3>
+          <p>Descubre eventos cerca de ti</p>
+        </div>
+
+        <div class="feature-card" (click)="navigateTo('/user/mis-entradas')">
+          <span class="feature-icon">🎟️</span>
+          <h3>Mis Entradas</h3>
+          <p>Gestiona tus compras</p>
+        </div>
+
+        <div class="feature-card" (click)="navigateTo('/user/perfil')">
+          <span class="feature-icon">👤</span>
+          <h3>Mi Perfil</h3>
+          <p>Actualiza tu información</p>
+        </div>
+
+      </div>
+    </div>
+
+  }
+
+</div>
